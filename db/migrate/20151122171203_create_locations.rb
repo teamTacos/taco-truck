@@ -6,6 +6,8 @@ class CreateLocations < ActiveRecord::Migration
       t.string :state
       t.string :country
       t.text :description
+
+      t.timestamps null: false
     end
   end
 end
