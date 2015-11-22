@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe 'Locations API' do
   it "sends a list of locations" do
-    FactoryGirl.create(:location, 5)
+    FactoryGirl.create_list(:location, 5)
 
     get '/api/locations'
     json = JSON.parse(response.body)
@@ -29,7 +29,7 @@ describe 'Locations API' do
   end
 
   it "updates a location" do
-    location = FactoryGril.create(:location)
+    location = FactoryGirl.create(:location)
     location.name = 'Updated Name'
 
     put "/api/locations/#{location.id}", body: location
@@ -44,5 +44,4 @@ describe 'Locations API' do
 
     expect(response).to be_success
   end
-
 end
