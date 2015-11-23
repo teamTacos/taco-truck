@@ -1,29 +1,37 @@
+require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Locations API' do
   it "sends a list of locations" do
     FactoryGirl.create_list(:location, 5)
 
-    get '/api/locations'
+    get '/api/v1/locations'
     json = JSON.parse(response.body)
 
     expect(response).to be_success
-    expect(json['locations'].length).to eq(5)
+    expect(JSON.parse(response.body).size).to eq(5)
   end
 
   it "sends a location by id" do
     location = FactoryGirl.create(:location)
 
-    get "/api/locations/#{location.id}"
+    get "/api/v1/locations/#{location.id}"
 
     expect(response).to be_success
-    expect(json).to eql location.to_json
+    expect(response.body).to eql location.to_json
   end
 
   it "creates a location" do
     location = FactoryGirl.build(:location)
+    body = {
+            name: location.name,
+            city: location.city,
+            state: location.state,
+            country: location.country,
+            description: location.description
+            }.to_json
 
-    post '/api/locations', body: location
+    post '/api/v1/locations', body: body
 
     expect(response).to be_success
   end
@@ -32,7 +40,7 @@ describe 'Locations API' do
     location = FactoryGirl.create(:location)
     location.name = 'Updated Name'
 
-    put "/api/locations/#{location.id}", body: location
+    put "/api/v1/locations/#{location.id}", body: location.to_json
 
     expect(response).to be_success
   end
@@ -40,7 +48,7 @@ describe 'Locations API' do
   it "deletes a location" do
     location = FactoryGirl.create(:location)
 
-    delete "/api/locations/#{location.id}"
+    delete "/api/v1/locations/#{location.id}"
 
     expect(response).to be_success
   end
