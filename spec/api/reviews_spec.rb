@@ -28,7 +28,7 @@ describe 'Reviews API' do
   it "creates an review" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.build(:review, item_id: item_id)
+    review = FactoryGirl.build(:review, item_id: item.id)
     body = {
         item_id: item.id,
         description: review.description,
