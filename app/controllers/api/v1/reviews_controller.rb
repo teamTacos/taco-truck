@@ -41,11 +41,11 @@ module Api
 
       private
 
-      def find_item
+      def find_review
         @review = Review.find(params[:id])
       end
 
-      def item_params
+      def review_params
         params.permit(:description, :rating, :item_id)
       end
 
