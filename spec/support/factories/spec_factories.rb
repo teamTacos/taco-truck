@@ -13,4 +13,9 @@ FactoryGirl.define do
     description { Faker::Lorem.paragraph }
   end
 
+  factory :review do
+    item_id 0
+    description { Faker::Lorem.paragraph }
+    rating { rand(0..5) }
+  end
 end
