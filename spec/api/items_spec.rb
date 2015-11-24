@@ -6,7 +6,7 @@ describe 'Locations API' do
     location = FactoryGirl.create(:location)
     FactoryGirl.create_list(:item, 15, location_id: location.id)
 
-    get "/api/v1/location/#{location.id}/items"
+    get "/api/v1/locations/#{location.id}/items"
     json = JSON.parse(response.body)
 
     expect(response).to be_success
@@ -20,7 +20,7 @@ describe 'Locations API' do
     get "/api/v1/locations/#{location.id}/items/#{item.id}"
 
     expect(response).to be_success
-    expect(response.body).to eql location.to_json
+    expect(response.body).to eql item.to_json
   end
 
   it "creates an item" do

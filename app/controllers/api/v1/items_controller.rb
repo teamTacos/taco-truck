@@ -1,24 +1,24 @@
 module Api
   module V1
-    class LocationsController < ApplicationController
+    class ItemsController < ApplicationController
       before_filter :find_location, only: [:show, :update, :destroy]
 
       def index
-        render json: Location.all
+        render json: Item.where(location_id: params[:location_id])
       end
 
       def show
-        render json: @location
+        render json: @item
       end
 
       def create
         if @location.present?
           render nothing: true, status: :conflict
         else
-          @location = Location.new
-          @location.assign_attributes(location_params)
-          if @location.save
-            render json: @location
+          @item = Item.new
+          @item.assign_attributes(item_params)
+          if @item.save
+            render json: @item
           else
             render nothing: true, status: :bad_request
           end
@@ -26,27 +26,27 @@ module Api
       end
 
       def update
-        @location.assign_attributes(location_params)
-        if @location.save
-          render json: @location
+        @item.assign_attributes(item_params)
+        if @item.save
+          render json: @item
         else
           render nothing: true, status: :bad_request
         end
       end
 
       def destroy
-        @location.delete
+        @item.delete
         render nothing: true
       end
 
       private
 
       def find_location
-        @location = Location.find(params[:id])
+        @item = Item.find(params[:id])
       end
 
-      def location_params
-        params.permit(:name, :city, :statue, :country, :description)
+      def item_params
+        params.permit(:name, :description, :location_id)
       end
 
     end
