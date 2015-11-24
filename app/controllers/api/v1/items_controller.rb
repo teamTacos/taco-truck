@@ -1,7 +1,7 @@
 module Api
   module V1
     class ItemsController < ApplicationController
-      before_filter :find_location, only: [:show, :update, :destroy]
+      before_filter :find_item, only: [:show, :update, :destroy]
 
       def index
         render json: Item.where(location_id: params[:location_id])
@@ -41,7 +41,7 @@ module Api
 
       private
 
-      def find_location
+      def find_item
         @item = Item.find(params[:id])
       end
 
