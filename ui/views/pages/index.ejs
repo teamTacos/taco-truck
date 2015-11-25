@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="tacoTruck">
 <head>
   <% include ../partials/header.ejs %>
 </head>
@@ -15,7 +15,9 @@
 </div>
 <div class="container">
   <div class="alert alert-info text-center" role="alert">
-    Things and stuff!
+    <div ng-controller="locationsController">
+      <div ng-repeat="location in locations">{{location.name}} - {{location.city}}, {{location.state}}</div>
+    <div>
   </div>
 </div>
 
