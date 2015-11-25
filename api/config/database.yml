@@ -23,6 +23,10 @@ development:
 test:
   <<: *default
   database: taco_truck_test
+  username: postgres
+  password: password
+  host: localhost
+  port: 5432
 
 production:
   <<: *default
