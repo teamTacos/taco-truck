@@ -12,6 +12,18 @@
 /db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
+api/log/*
+!api/log/.keep
+api/tmp
+/.idea
+.byebug_history
+
+ui/node_modules
+ui/.env
+ui/Dockerfile
+ui/docker-compose.yml
+
+#remove these after api has been moved
 /log/*
 !/log/.keep
 /tmp
