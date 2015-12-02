@@ -32,5 +32,6 @@ production:
   <<: *default
   database: d3pnosro6bvj8h
   username: vpocujqrkypaom
-  password: <%= ENV['PSQL_PASSWORD'] %>
+  password: <%= ENV["PSQL_PASSWORD"] %>
   host: ec2-54-83-204-159.compute-1.amazonaws.com
+  port: 5432
