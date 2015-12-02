@@ -30,6 +30,7 @@ test:
 
 production:
   <<: *default
-  database: taco_truck_production
-  username:
-  password:
+  database: d3pnosro6bvj8h
+  username: vpocujqrkypaom
+  password: <%= ENV['PSQL_PASSWORD'] %>
+  host: ec2-54-83-204-159.compute-1.amazonaws.com
