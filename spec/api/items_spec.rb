@@ -54,4 +54,20 @@ describe 'Locations API' do
 
     expect(response).to be_success
   end
+
+  it "has count of revies" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create_list(:review, 5, item_id: item.id)
+
+    expect(item.reviews_count).to eql 5
+  end
+
+  it "averages review values" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
+
+    expect(item.reviews_average).to eql 3
+  end
 end
