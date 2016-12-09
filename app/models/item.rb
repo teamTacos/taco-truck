@@ -3,7 +3,7 @@ class Item < ActiveRecord::Base
   belongs_to :location
   has_many :reviews
 
-  attr_accessor :reviews_count, :reviews_average
+  attr_reader :reviews_count, :reviews_average
 
   def attributes
     super.merge(:reviews_count => self.reviews_count, :reviews_average => self.reviews_average)
