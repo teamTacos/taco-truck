@@ -46,7 +46,7 @@ module Api
       end
 
       def item_params
-        params.permit(:name, :description, :location_id)
+        params.permit(:name, :description, :location_id, :thumbnail, :created_by)
       end
 
     end

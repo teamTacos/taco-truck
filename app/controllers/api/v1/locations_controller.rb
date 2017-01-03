@@ -46,7 +46,7 @@ module Api
       end
 
       def location_params
-        params.permit(:name, :city, :state, :country, :description)
+        params.permit(:name, :city, :state, :country, :description, :thumbnail, :created_by)
       end
 
     end
