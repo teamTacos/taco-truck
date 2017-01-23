@@ -25,6 +25,3 @@ class Location < ActiveRecord::Base
   end
 
 end
-
-#TODO: Add tests for reviews_average, reviews_count, items_count on Location response
-#TODO: Add update test to include thumbnail and created_by fields

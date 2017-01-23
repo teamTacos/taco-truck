@@ -36,9 +36,19 @@ describe 'Locations API' do
     expect(response).to be_success
   end
 
-  it "updates a location" do
+  it "updates a location name" do
     location = FactoryGirl.create(:location)
     location.name = 'Updated Name'
+
+    put "/api/v1/locations/#{location.id}", body: location.to_json
+
+    expect(response).to be_success
+  end
+
+  it "updates a location thubnail and created_by fields" do
+    location = FactoryGirl.create(:location)
+    location.thumbnail = "https://placekitten.com/g/300/200"
+    location.created_by = Faker::Name.name
 
     put "/api/v1/locations/#{location.id}", body: location.to_json
 
@@ -51,5 +61,34 @@ describe 'Locations API' do
     delete "/api/v1/locations/#{location.id}"
 
     expect(response).to be_success
+  end
+
+  it "returns the count of the reviews" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create_list(:review, 6, item_id: item.id, rating: 3)
+
+    get "/api/v1/locations/#{location.id}"
+
+    expect(JSON.parse(response.body)["reviews_count"]).to eql 6
+  end
+
+  it "returns the average of the ratings" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
+
+    get "/api/v1/locations/#{location.id}"
+
+    expect(JSON.parse(response.body)["reviews_average"]).to eql 3
+  end
+
+  it "returns a count of the items" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
+
+    get "/api/v1/locations/#{location.id}"
+    expect(JSON.parse(response.body)["items_count"]).to eql 1
   end
 end

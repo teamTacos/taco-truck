@@ -5,12 +5,16 @@ FactoryGirl.define do
     state { Faker::Address.state_abbr }
     country { Faker::Address.country }
     description { Faker::Lorem.paragraph }
+    created_by { Faker::Name.name }
+    thumbnail { "https://placekitten.com/g/200/300" }
   end
 
   factory :item do
     location_id 0
     name { Faker::Commerce.product_name }
     description { Faker::Lorem.paragraph }
+    created_by { Faker::Name.name }
+    thumbnail { "https://placekitten.com/g/200/300" }
   end
 
   factory :review do

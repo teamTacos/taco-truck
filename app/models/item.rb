@@ -22,6 +22,3 @@ class Item < ActiveRecord::Base
   end
 
 end
-
-#TODO: Add tests for reviews_average and reviews_count on Item response
-#TODO: Add update test to include thumbnail and created_by fields
