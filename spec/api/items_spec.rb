@@ -7,7 +7,6 @@ describe 'Locations API' do
     FactoryGirl.create_list(:item, 15, location_id: location.id)
 
     get "/api/v1/locations/#{location.id}/items"
-    json = JSON.parse(response.body)
 
     expect(response).to be_success
     expect(JSON.parse(response.body).size).to eq(15)
@@ -34,16 +33,17 @@ describe 'Locations API' do
     post "/api/v1/locations/#{location.id}/items", body: body
 
     expect(response).to be_success
+    expect(Item.exists?(JSON.parse(response.body)['id'])).to be
   end
 
   it "updates an item" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
-    item.name = 'Updated Item'
-
-    put "/api/v1/locations/#{location.id}/items/#{item.id}", body: location.to_json
+    item.name = Faker::Name.name
+    put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
 
     expect(response).to be_success
+    expect(Item.find(item.id).name).to eql item.name
   end
 
   it "deletes an item" do
@@ -53,22 +53,7 @@ describe 'Locations API' do
     delete "/api/v1/locations/#{location.id}/items/#{item.id}"
 
     expect(response).to be_success
-  end
-
-  it "has count of reviews" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    FactoryGirl.create_list(:review, 5, item_id: item.id)
-
-    expect(item.reviews_count).to eql 5
-  end
-
-  it "averages review values" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
-
-    expect(item.reviews_average).to eql 3
+    expect(Item.exists?(item.id)).to be false
   end
 
   it "returns the count of the reviews" do
@@ -90,14 +75,25 @@ describe 'Locations API' do
     expect(JSON.parse(response.body)["reviews_average"]).to eql 3
   end
 
-  it "updates an item thubnail and created_by fields" do
+  it "updates an item created_by field" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
-    item.thumbnail = "https://placekitten.com/g/300/200"
     item.created_by = Faker::Name.name
 
-    put "/api/v1/locations/#{location.id}/items/#{item.id}", body: location.to_json
+    put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
 
     expect(response).to be_success
+    expect(Item.find(item.id).created_by).to eql item.created_by
+  end
+
+  it "updates an item thubnail field" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    item.thumbnail = "https://placekitten.com/g/#{Random.rand(201..300)}/#{Random.rand(201..300)}"
+
+    put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
+
+    expect(response).to be_success
+    expect(Item.find(item.id).thumbnail).to eql item.thumbnail
   end
 end
