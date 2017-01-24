@@ -52,7 +52,7 @@ describe 'Locations API' do
 
     delete "/api/v1/locations/#{location.id}/items/#{item.id}"
 
-    expect(response.code).to eql 204
+    expect(response.code).to eql "204"
     expect(Item.exists?(item.id)).to be false
   end
 

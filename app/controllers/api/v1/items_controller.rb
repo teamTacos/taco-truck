@@ -18,7 +18,7 @@ module Api
           @item = Item.new
           @item.assign_attributes(item_params)
           if @item.save
-            render json: @item
+            render json: @item, status: :created
           else
             render nothing: true, status: :bad_request
           end
@@ -28,7 +28,7 @@ module Api
       def update
         @item.assign_attributes(item_params)
         if @item.save
-          render json: @item
+          render json: @item, status: :no_content
         else
           render nothing: true, status: :bad_request
         end
@@ -36,7 +36,7 @@ module Api
 
       def destroy
         @item.delete
-        render nothing: true
+        render nothing: true, status: :no_content
       end
 
       private

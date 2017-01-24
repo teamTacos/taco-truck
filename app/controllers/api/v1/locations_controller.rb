@@ -18,7 +18,7 @@ module Api
           @location = Location.new
           @location.assign_attributes(location_params)
           if @location.save
-            render json: @location
+            render json: @location, status: :created
           else
             render nothing: true, status: :bad_request
           end
@@ -28,7 +28,7 @@ module Api
       def update
         @location.assign_attributes(location_params)
         if @location.save
-          render json: @location
+          render json: @location, status: :no_content
         else
           render nothing: true, status: :bad_request
         end
@@ -36,7 +36,7 @@ module Api
 
       def destroy
         @location.delete
-        render nothing: true
+        render nothing: true, status: :no_content
       end
 
       private
