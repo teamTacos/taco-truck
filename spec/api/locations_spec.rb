@@ -6,10 +6,9 @@ describe 'Locations API' do
     FactoryGirl.create_list(:location, 5)
 
     get '/api/v1/locations'
-    json = JSON.parse(response.body)
 
     expect(response).to be_success
-    expect(JSON.parse(response.body).size).to eq(5)
+    expect(JSON.parse(response.body).size).to eql 5
   end
 
   it "sends a location by id" do
@@ -33,26 +32,38 @@ describe 'Locations API' do
 
     post '/api/v1/locations', body: body
 
-    expect(response).to be_success
+    expect(response.code).to eql "201"
+    expect(Location.exists?(JSON.parse(response.body)['id'])).to be
   end
 
   it "updates a location name" do
     location = FactoryGirl.create(:location)
-    location.name = 'Updated Name'
+    location.name = Faker::Name.name
 
     put "/api/v1/locations/#{location.id}", body: location.to_json
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
+    expect(Location.find(location.id).name).to eql location.name
   end
 
-  it "updates a location thubnail and created_by fields" do
+  it "updates a location created_by field" do
     location = FactoryGirl.create(:location)
-    location.thumbnail = "https://placekitten.com/g/300/200"
     location.created_by = Faker::Name.name
 
     put "/api/v1/locations/#{location.id}", body: location.to_json
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
+    expect(Location.find(location.id).created_by).to eql location.created_by
+  end
+
+  it "updates a location thubnail field" do
+    location = FactoryGirl.create(:location)
+    location.thumbnail = "https://placekitten.com/g/#{Random.rand(201..300)}/#{Random.rand(201..300)}"
+
+    put "/api/v1/locations/#{location.id}", body: location.to_json
+
+    expect(response.code).to eql "204"
+    expect(Location.find(location.id).thumbnail).to eql location.thumbnail
   end
 
   it "deletes a location" do
@@ -60,7 +71,8 @@ describe 'Locations API' do
 
     delete "/api/v1/locations/#{location.id}"
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
+    expect(Location.exists?(location.id)).to be false
   end
 
   it "returns the count of the reviews" do
