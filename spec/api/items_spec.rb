@@ -8,7 +8,7 @@ describe 'Locations API' do
 
     get "/api/v1/locations/#{location.id}/items"
 
-    expect(response).to be_success
+    expect(response.code).to eql "200"
     expect(JSON.parse(response.body).size).to eq(15)
   end
 
@@ -18,7 +18,7 @@ describe 'Locations API' do
 
     get "/api/v1/locations/#{location.id}/items/#{item.id}"
 
-    expect(response).to be_success
+    expect(response.code).to eql "200"
     expect(response.body).to eql item.to_json
   end
 
@@ -32,7 +32,7 @@ describe 'Locations API' do
 
     post "/api/v1/locations/#{location.id}/items", body: body
 
-    expect(response).to be_success
+    expect(response.code).to eql "201"
     expect(Item.exists?(JSON.parse(response.body)['id'])).to be
   end
 
@@ -42,7 +42,7 @@ describe 'Locations API' do
     item.name = Faker::Name.name
     put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
     expect(Item.find(item.id).name).to eql item.name
   end
 
@@ -52,7 +52,7 @@ describe 'Locations API' do
 
     delete "/api/v1/locations/#{location.id}/items/#{item.id}"
 
-    expect(response).to be_success
+    expect(response.code).to eql 204
     expect(Item.exists?(item.id)).to be false
   end
 
@@ -82,7 +82,7 @@ describe 'Locations API' do
 
     put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
     expect(Item.find(item.id).created_by).to eql item.created_by
   end
 
@@ -93,7 +93,7 @@ describe 'Locations API' do
 
     put "/api/v1/locations/#{location.id}/items/#{item.id}", body: item.to_json
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
     expect(Item.find(item.id).thumbnail).to eql item.thumbnail
   end
 end
