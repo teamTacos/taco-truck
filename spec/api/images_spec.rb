@@ -2,7 +2,7 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Images API' do
-  it "sends a list of images for an item" do
+  it "sends a list of images for a location" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
     review = FactoryGirl.create(:review, item_id: item.id)
