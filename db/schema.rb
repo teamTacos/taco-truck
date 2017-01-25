@@ -17,8 +17,7 @@ ActiveRecord::Schema.define(version: 20170102224526) do
   enable_extension "plpgsql"
 
   create_table "images", force: :cascade do |t|
-    t.string  "public_id"
-    t.string  "string"
+    t.string  "cloudinary_id"
     t.integer "location_id"
     t.integer "item_id"
     t.integer "review_id"

@@ -1,6 +1,7 @@
 class Location < ActiveRecord::Base
 
   has_many :items
+  has_many :images
 
   attr_reader :items_count, :reviews_count, :reviews_average
 

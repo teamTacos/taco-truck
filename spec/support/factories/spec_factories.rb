@@ -22,4 +22,11 @@ FactoryGirl.define do
     description { Faker::Lorem.paragraph }
     rating { rand(0..5) }
   end
+
+  factory :image do
+    item_id 0
+    location_id 0
+    review_id 0
+    cloudinary_id { Faker::Lorem.characters(20) }
+  end
 end

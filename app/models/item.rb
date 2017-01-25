@@ -2,6 +2,7 @@ class Item < ActiveRecord::Base
 
   belongs_to :location
   has_many :reviews
+  has_many :images
 
   attr_reader :reviews_count, :reviews_average
 
