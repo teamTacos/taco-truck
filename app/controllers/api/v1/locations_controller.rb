@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @location.assign_attributes(location_params)
+        @location.update_attributes!(location_params)
         if @location.save
           render json: @location, status: :no_content
         else

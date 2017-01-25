@@ -28,9 +28,9 @@ describe 'Locations API' do
             state: location.state,
             country: location.country,
             description: location.description
-            }.to_json
+            }
 
-    post '/api/v1/locations', body: body
+    post '/api/v1/locations', body
 
     expect(response.code).to eql "201"
     expect(Location.exists?(JSON.parse(response.body)['id'])).to be
@@ -40,7 +40,7 @@ describe 'Locations API' do
     location = FactoryGirl.create(:location)
     location.name = Faker::Name.name
 
-    put "/api/v1/locations/#{location.id}", body: location.to_json
+    put "/api/v1/locations/#{location.id}", JSON.parse(location.to_json)
 
     expect(response.code).to eql "204"
     expect(Location.find(location.id).name).to eql location.name
@@ -50,7 +50,7 @@ describe 'Locations API' do
     location = FactoryGirl.create(:location)
     location.created_by = Faker::Name.name
 
-    put "/api/v1/locations/#{location.id}", body: location.to_json
+    put "/api/v1/locations/#{location.id}", JSON.parse(location.to_json)
 
     expect(response.code).to eql "204"
     expect(Location.find(location.id).created_by).to eql location.created_by
@@ -60,7 +60,7 @@ describe 'Locations API' do
     location = FactoryGirl.create(:location)
     location.thumbnail = "https://placekitten.com/g/#{Random.rand(201..300)}/#{Random.rand(201..300)}"
 
-    put "/api/v1/locations/#{location.id}", body: location.to_json
+    put "/api/v1/locations/#{location.id}", JSON.parse(location.to_json)
 
     expect(response.code).to eql "204"
     expect(Location.find(location.id).thumbnail).to eql location.thumbnail

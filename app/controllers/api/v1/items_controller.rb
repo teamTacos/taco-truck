@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @item.assign_attributes(item_params)
+        @item.update_attributes(item_params)
         if @item.save
           render json: @item, status: :no_content
         else
