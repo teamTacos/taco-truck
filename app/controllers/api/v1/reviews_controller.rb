@@ -18,7 +18,7 @@ module Api
           @review = Review.new
           @review.assign_attributes(review_params)
           if @review.save
-            render json: @review
+            render json: @review, status: :created
           else
             render nothing: true, status: :bad_request
           end
@@ -28,7 +28,7 @@ module Api
       def update
         @review.assign_attributes(review_params)
         if @review.save
-          render json: @review
+          render json: @review, status: :no_content
         else
           render nothing: true, status: :bad_request
         end
@@ -36,7 +36,7 @@ module Api
 
       def destroy
         @review.delete
-        render nothing: true
+        render nothing: true, status: :no_content
       end
 
       private

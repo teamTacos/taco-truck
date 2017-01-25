@@ -8,10 +8,9 @@ describe 'Reviews API' do
     FactoryGirl.create_list(:review, 3, item_id: item.id)
 
     get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews"
-    json = JSON.parse(response.body)
 
     expect(response).to be_success
-    expect(JSON.parse(response.body).size).to eq(3)
+    expect(JSON.parse(response.body).size).to eql 3
   end
 
   it "sends a review by id" do
@@ -21,7 +20,7 @@ describe 'Reviews API' do
 
     get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
 
-    expect(response).to be_success
+    expect(response.code).to eql "200"
     expect(response.body).to eql review.to_json
   end
 
@@ -33,22 +32,24 @@ describe 'Reviews API' do
         item_id: item.id,
         description: review.description,
         rating: review.rating
-    }.to_json
+    }
 
-    post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body: body
+    post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body
 
-    expect(response).to be_success
+    expect(response.code).to eql "201"
+    expect(Review.exists?(JSON.parse(response.body)['id'])).to be
   end
 
   it "updates a review" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
     review = FactoryGirl.create(:review, item_id: item.id)
-    review.description = 'Updated review description'
+    review.description = Faker::Lorem.sentence
 
-    put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", body: review.to_json
+    put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", JSON.parse(review.to_json)
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
+    expect(Review.find(review.id).description).to eql review.description
   end
 
   it "deletes an review" do
@@ -58,6 +59,7 @@ describe 'Reviews API' do
 
     delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
 
-    expect(response).to be_success
+    expect(response.code).to eql "204"
+    expect(Review.exists?(review.id)).to be false
   end
 end
