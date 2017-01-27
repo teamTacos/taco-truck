@@ -94,15 +94,13 @@ describe 'Locations API' do
     expect(JSON.parse(response.body)["items_count"]).to eql 1
   end
 
-  it "returns a cloudinary id for banner image" do
-    image = FactoryGirl.create(:image)
-    location = FactoryGirl.create(:location, banner_image: image.id)
-    image.location_id = location.id
-    image.save
+  it "returns all images" do
+    location = FactoryGirl.create(:location)
+    FactoryGirl.create_list(:image, 4, location_id: location.id)
 
     get "/api/v1/locations/#{location.id}"
 
     expect(response.code).to eql "200"
-    expect(JSON.parse(response.body)['banner_cloudinary_id']).to eql image.cloudinary_id
+    expect(JSON.parse(response.body)['all_images'].count).to eql 4
   end
 end

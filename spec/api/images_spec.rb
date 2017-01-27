@@ -71,20 +71,7 @@ describe 'Images API' do
     expect(response.body).to eql image.to_json
   end
 
-  it "updates location banner_image field with image id if location_banner is true" do
-    location = FactoryGirl.create(:location)
-    body = {
-        cloudinary_id: Faker::Lorem.characters(20),
-        location_id: location.id,
-        location_banner: true
-    }
-    post "/api/v1/locations/#{location.id}/images", body
-
-    expect(response.code).to eql "201"
-    expect(Location.find(location.id)['banner_image']).to eql JSON.parse(response.body)['id']
-  end
-
-  it "updates review banner_image field with image id if review_banner is true" do
+  it "sets review_banner field" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
     review = FactoryGirl.create(:review, item_id: item.id)
@@ -93,26 +80,60 @@ describe 'Images API' do
         location_id: location.id,
         item_id: item.id,
         review_id: review.id,
-        review_banner: true
+        review_banner: 1
     }
+
     post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}/images", body
 
     expect(response.code).to eql "201"
-    expect(Review.find(review.id)['banner_image']).to eql JSON.parse(response.body)['id']
+    expect(Image.find(JSON.parse(response.body)['id'])['review_banner']).to eql 1
   end
 
-  it "updates item banner_image field with image id if item_banner is true" do
+  it "sets item_banner field" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)
     body = {
         cloudinary_id: Faker::Lorem.characters(20),
         location_id: location.id,
         item_id: item.id,
-        item_banner: true
+        item_banner: 1
     }
+
     post "/api/v1/locations/#{location.id}/items/#{item.id}/images", body
 
     expect(response.code).to eql "201"
-    expect(Item.find(item.id)['banner_image']).to eql JSON.parse(response.body)['id']
+    expect(Image.find(JSON.parse(response.body)['id'])['item_banner']).to eql 1
+  end
+
+  it "sets location_banner field" do
+    location = FactoryGirl.create(:location)
+    body = {
+        cloudinary_id: Faker::Lorem.characters(20),
+        location_id: location.id,
+        location_banner: 1
+    }
+
+    post "/api/v1/locations/#{location.id}/images", body
+
+    expect(response.code).to eql "201"
+    expect(Image.find(JSON.parse(response.body)['id'])['location_banner']).to eql 1
+  end
+
+  it "clears all other location_banner fields when a new one is set" do
+    location = FactoryGirl.create(:location)
+    FactoryGirl.create_list(:image, 5, location_id: location.id, location_banner: 1)
+    body = {
+        cloudinary_id: Faker::Lorem.characters(20),
+        location_id: location.id,
+        location_banner: 1
+    }
+
+    post "/api/v1/locations/#{location.id}/images", body
+
+    expect(response.code).to eql "201"
+    images = Image.where(location_id: location.id)
+    location_banners = images.collect { |image| image.location_banner }
+    expect(location_banners.compact.inject(:+)).to eql 1
+    expect(Image.find(JSON.parse(response.body)['id'])['location_banner']).to eql 1
   end
 end

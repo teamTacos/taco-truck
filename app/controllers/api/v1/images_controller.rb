@@ -48,13 +48,13 @@ module Api
       end
 
       def image_params
-        params.permit(:cloudinary_id, :review_id, :item_id, :location_id)
+        params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
       end
 
       def set_banners
-        Location.find(params[:location_id]).update(banner_image: @image.id) if params[:location_banner].eql?("true")
-        Review.find(params[:review_id]).update(banner_image: @image.id) if params[:review_banner].eql?("true")
-        Item.find(params[:item_id]).update(banner_image: @image.id) if params[:item_banner].eql?("true")
+        Image.where(location_id: params[:location_id]).where.not(id: @image.id).update_all(location_banner: nil) if params[:location_banner] == "1"
+        Image.where(item_id: params[:item_id]).where.not(id: @image.id).update_all(item_banner: nil) if params[:item_banner] == "1"
+        Image.where(review_id: params[:review_id]).where.not(id: @image.id).update_all(review_banner: nil) if params[:review_banner] == "1"
       end
 
     end

@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.integer "location_id"
     t.integer "item_id"
     t.integer "review_id"
+    t.integer "location_banner"
+    t.integer "review_banner"
+    t.integer "item_banner"
   end
 
   create_table "items", force: :cascade do |t|
@@ -30,7 +33,6 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "created_by"
-    t.integer  "banner_image"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -42,7 +44,6 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "created_by"
-    t.integer  "banner_image"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -52,7 +53,6 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "created_by"
-    t.integer  "banner_image"
   end
 
 end

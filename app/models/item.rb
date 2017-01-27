@@ -4,10 +4,10 @@ class Item < ActiveRecord::Base
   has_many :reviews
   has_many :images
 
-  attr_reader :reviews_count, :reviews_average
+  attr_reader :reviews_count, :reviews_average, :all_images
 
   def attributes
-    super.merge(:reviews_count => self.reviews_count, :reviews_average => self.reviews_average)
+    super.merge(reviews_count: self.reviews_count, reviews_average: self.reviews_average, all_images: self.all_images)
   end
 
   def reviews_count
@@ -20,6 +20,10 @@ class Item < ActiveRecord::Base
       total += review.rating
     end
     self.reviews.length > 0 ? (total / self.reviews.length).to_i : 0
+  end
+
+  def all_images
+    images
   end
 
 end

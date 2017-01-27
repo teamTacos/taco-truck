@@ -22,9 +22,9 @@ FactoryGirl.define do
   end
 
   factory :image do
-    item_id 0
-    location_id 0
-    review_id 0
+    item_id nil
+    location_id nil
+    review_id nil
     cloudinary_id { Faker::Lorem.characters(20) }
   end
 end
