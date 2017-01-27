@@ -2,15 +2,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :images do
+      end
       resources :locations do
-        resources :images do
-        end
         resources :items do
-          resources :images do
-          end
           resources :reviews do
-            resources :images do
-            end
           end
         end
       end

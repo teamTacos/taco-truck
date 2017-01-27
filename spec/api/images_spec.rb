@@ -8,7 +8,7 @@ describe 'Images API' do
     review = FactoryGirl.create(:review, item_id: item.id)
     FactoryGirl.create_list(:image, 3, item_id: item.id, location_id: location.id, review_id: review.id)
 
-    get "/api/v1/locations/#{location.id}/images"
+    get "/api/v1/images"
 
     expect(response).to be_success
     expect(JSON.parse(response.body).size).to eql 3
@@ -20,7 +20,7 @@ describe 'Images API' do
     review = FactoryGirl.create(:review, item_id: item.id)
     FactoryGirl.create_list(:image, 4, item_id: item.id, location_id: location.id, review_id: review.id)
 
-    get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}/images"
+    get "/api/v1/images"
 
     expect(response).to be_success
     expect(JSON.parse(response.body).size).to eql 4
@@ -31,7 +31,7 @@ describe 'Images API' do
     item = FactoryGirl.create(:item, location_id: location.id)
     FactoryGirl.create_list(:image, 2, item_id: item.id, location_id: location.id)
 
-    get "/api/v1/locations/#{location.id}/items/#{item.id}/images"
+    get "/api/v1/images"
 
     expect(response).to be_success
     expect(JSON.parse(response.body).size).to eql 2
@@ -44,7 +44,7 @@ describe 'Images API' do
         location_id: location.id
     }
 
-    post "/api/v1/locations/#{location.id}/images", body
+    post "/api/v1/images", body
 
     expect(response.code).to eql "201"
     expect(Image.exists?(JSON.parse(response.body)['id'])).to be
@@ -55,7 +55,7 @@ describe 'Images API' do
     item = FactoryGirl.create(:item, location_id: location.id)
     review = FactoryGirl.create(:review, item_id: item.id)
     image = FactoryGirl.create(:image, item_id: item.id, location_id: location.id, review_id: review.id)
-    delete "/api/v1/locations/#{location.id}/images/#{image.id}"
+    delete "/api/v1/images/#{image.id}"
 
     expect(response.code).to eql "204"
     expect(Image.exists?(image.id)).to be false
@@ -65,7 +65,7 @@ describe 'Images API' do
     location = FactoryGirl.create(:location)
     image = FactoryGirl.create(:image, location_id: location.id)
 
-    get "/api/v1/locations/#{location.id}/images/#{image.id}"
+    get "/api/v1/images/#{image.id}"
 
     expect(response.code).to eql "200"
     expect(response.body).to eql image.to_json
@@ -83,7 +83,7 @@ describe 'Images API' do
         review_banner: 1
     }
 
-    post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}/images", body
+    post "/api/v1/images", body
 
     expect(response.code).to eql "201"
     expect(Image.find(JSON.parse(response.body)['id'])['review_banner']).to eql 1
@@ -99,7 +99,7 @@ describe 'Images API' do
         item_banner: 1
     }
 
-    post "/api/v1/locations/#{location.id}/items/#{item.id}/images", body
+    post "/api/v1/images", body
 
     expect(response.code).to eql "201"
     expect(Image.find(JSON.parse(response.body)['id'])['item_banner']).to eql 1
@@ -113,7 +113,7 @@ describe 'Images API' do
         location_banner: 1
     }
 
-    post "/api/v1/locations/#{location.id}/images", body
+    post "/api/v1/images", body
 
     expect(response.code).to eql "201"
     expect(Image.find(JSON.parse(response.body)['id'])['location_banner']).to eql 1
@@ -128,7 +128,7 @@ describe 'Images API' do
         location_banner: 1
     }
 
-    post "/api/v1/locations/#{location.id}/images", body
+    post "/api/v1/images", body
 
     expect(response.code).to eql "201"
     images = Image.where(location_id: location.id)
