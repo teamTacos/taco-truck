@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @review.assign_attributes(review_params)
+        @review.update_attributes(review_params)
         if @review.save
           render json: @review, status: :no_content
         else

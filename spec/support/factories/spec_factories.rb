@@ -6,7 +6,6 @@ FactoryGirl.define do
     country { Faker::Address.country }
     description { Faker::Lorem.paragraph }
     created_by { Faker::Name.name }
-    thumbnail { "https://placekitten.com/g/200/300" }
   end
 
   factory :item do
@@ -14,12 +13,18 @@ FactoryGirl.define do
     name { Faker::Commerce.product_name }
     description { Faker::Lorem.paragraph }
     created_by { Faker::Name.name }
-    thumbnail { "https://placekitten.com/g/200/300" }
   end
 
   factory :review do
     item_id 0
     description { Faker::Lorem.paragraph }
     rating { rand(0..5) }
+  end
+
+  factory :image do
+    item_id nil
+    location_id nil
+    review_id nil
+    cloudinary_id { Faker::Lorem.characters(20) }
   end
 end

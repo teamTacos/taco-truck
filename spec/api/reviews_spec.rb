@@ -62,4 +62,16 @@ describe 'Reviews API' do
     expect(response.code).to eql "204"
     expect(Review.exists?(review.id)).to be false
   end
+
+  it "returns all images" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    review = FactoryGirl.create(:review, item_id: item.id)
+    FactoryGirl.create_list(:image, 4, location_id: location.id, review_id: review.id)
+
+    get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
+
+    expect(response.code).to eql "200"
+    expect(JSON.parse(response.body)['all_images'].count).to eql 4
+  end
 end
