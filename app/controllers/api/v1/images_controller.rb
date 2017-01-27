@@ -18,6 +18,7 @@ module Api
           @image = Image.new
           @image.assign_attributes(image_params)
           if @image.save
+            set_banners
             render json: @image, status: :created
           else
             render nothing: true, status: :bad_request
@@ -26,8 +27,9 @@ module Api
       end
 
       def update
-        @image.assign_attributes(image_params)
+        @image.update_attributes(image_params)
         if @image.save
+          set_banners
           render json: @image, status: :no_content
         else
           render nothing: true, status: :bad_request
@@ -46,7 +48,13 @@ module Api
       end
 
       def image_params
-        params.permit(:cloudinary_id, :location_id, :review_id, :item_id)
+        params.permit(:cloudinary_id, :review_id, :item_id, :location_id)
+      end
+
+      def set_banners
+        if params[:location_banner].eql?("true")
+          Location.find(params[:location_id]).update(banner_image: @image.id)
+        end
       end
 
     end

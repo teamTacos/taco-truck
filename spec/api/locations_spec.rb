@@ -56,16 +56,6 @@ describe 'Locations API' do
     expect(Location.find(location.id).created_by).to eql location.created_by
   end
 
-  it "updates a location thubnail field" do
-    location = FactoryGirl.create(:location)
-    location.thumbnail = "https://placekitten.com/g/#{Random.rand(201..300)}/#{Random.rand(201..300)}"
-
-    put "/api/v1/locations/#{location.id}", JSON.parse(location.to_json)
-
-    expect(response.code).to eql "204"
-    expect(Location.find(location.id).thumbnail).to eql location.thumbnail
-  end
-
   it "deletes a location" do
     location = FactoryGirl.create(:location)
 
@@ -102,5 +92,17 @@ describe 'Locations API' do
 
     get "/api/v1/locations/#{location.id}"
     expect(JSON.parse(response.body)["items_count"]).to eql 1
+  end
+
+  it "returns a cloudinary id for banner image" do
+    image = FactoryGirl.create(:image)
+    location = FactoryGirl.create(:location, banner_image: image.id)
+    image.location_id = location.id
+    image.save
+
+    get "/api/v1/locations/#{location.id}"
+
+    expect(response.code).to eql "200"
+    expect(JSON.parse(response.body)['banner_cloudinary_id']).to eql image.cloudinary_id
   end
 end

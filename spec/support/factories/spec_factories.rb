@@ -6,7 +6,6 @@ FactoryGirl.define do
     country { Faker::Address.country }
     description { Faker::Lorem.paragraph }
     created_by { Faker::Name.name }
-    thumbnail { "https://placekitten.com/g/200/300" }
   end
 
   factory :item do
