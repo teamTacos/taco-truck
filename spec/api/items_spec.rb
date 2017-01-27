@@ -84,15 +84,4 @@ describe 'Locations API' do
     expect(response.code).to eql "204"
     expect(Item.find(item.id).created_by).to eql item.created_by
   end
-
-  it "updates an item thubnail field" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    item.thumbnail = "https://placekitten.com/g/#{Random.rand(201..300)}/#{Random.rand(201..300)}"
-
-    put "/api/v1/locations/#{location.id}/items/#{item.id}", JSON.parse(item.to_json)
-
-    expect(response.code).to eql "204"
-    expect(Item.find(item.id).thumbnail).to eql item.thumbnail
-  end
 end

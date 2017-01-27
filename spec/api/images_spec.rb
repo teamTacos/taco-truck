@@ -83,4 +83,36 @@ describe 'Images API' do
     expect(response.code).to eql "201"
     expect(Location.find(location.id)['banner_image']).to eql JSON.parse(response.body)['id']
   end
+
+  it "updates review banner_image field with image id if review_banner is true" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    review = FactoryGirl.create(:review, item_id: item.id)
+    body = {
+        cloudinary_id: Faker::Lorem.characters(20),
+        location_id: location.id,
+        item_id: item.id,
+        review_id: review.id,
+        review_banner: true
+    }
+    post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}/images", body
+
+    expect(response.code).to eql "201"
+    expect(Review.find(review.id)['banner_image']).to eql JSON.parse(response.body)['id']
+  end
+
+  it "updates item banner_image field with image id if item_banner is true" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    body = {
+        cloudinary_id: Faker::Lorem.characters(20),
+        location_id: location.id,
+        item_id: item.id,
+        item_banner: true
+    }
+    post "/api/v1/locations/#{location.id}/items/#{item.id}/images", body
+
+    expect(response.code).to eql "201"
+    expect(Item.find(item.id)['banner_image']).to eql JSON.parse(response.body)['id']
+  end
 end

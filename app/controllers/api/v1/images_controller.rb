@@ -52,9 +52,9 @@ module Api
       end
 
       def set_banners
-        if params[:location_banner].eql?("true")
-          Location.find(params[:location_id]).update(banner_image: @image.id)
-        end
+        Location.find(params[:location_id]).update(banner_image: @image.id) if params[:location_banner].eql?("true")
+        Review.find(params[:review_id]).update(banner_image: @image.id) if params[:review_banner].eql?("true")
+        Item.find(params[:item_id]).update(banner_image: @image.id) if params[:item_banner].eql?("true")
       end
 
     end

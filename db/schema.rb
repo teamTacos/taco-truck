@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "created_by"
-    t.string   "thumbnail"
+    t.integer  "banner_image"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20170102224526) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "created_by"
+    t.integer  "banner_image"
   end
 
 end
