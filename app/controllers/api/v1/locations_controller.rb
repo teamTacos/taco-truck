@@ -35,8 +35,12 @@ module Api
       end
 
       def destroy
-        @location.delete
-        render nothing: true, status: :no_content
+        if @location.items_count > 0
+          render json: { errors: 'Cannot delete Location that has Items.' }, status: :not_acceptable
+        else
+          @location.delete
+          render nothing: true, status: :no_content
+        end
       end
 
       private

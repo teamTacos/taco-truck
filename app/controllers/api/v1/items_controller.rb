@@ -35,8 +35,12 @@ module Api
       end
 
       def destroy
-        @item.delete
-        render nothing: true, status: :no_content
+        if @item.reviews_count > 0
+          render json: { errors: 'Cannot delete Item that has Reviews.' }, status: :not_acceptable
+        else
+          @item.delete
+          render nothing: true, status: :no_content
+        end
       end
 
       private

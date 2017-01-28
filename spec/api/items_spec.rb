@@ -95,4 +95,15 @@ describe 'Locations API' do
     expect(response.code).to eql "200"
     expect(JSON.parse(response.body)['all_images'].count).to eql 4
   end
+
+  it "will not delete and item that has reviews" do
+    location = FactoryGirl.create(:location)
+    item = FactoryGirl.create(:item, location_id: location.id)
+    FactoryGirl.create(:review, item_id: item.id)
+
+    delete "/api/v1/locations/#{location.id}/items/#{item.id}"
+
+    expect(response.code).to eql "406"
+    expect(JSON.parse(response.body)['errors']).to eql 'Cannot delete Item that has Reviews.'
+  end
 end
