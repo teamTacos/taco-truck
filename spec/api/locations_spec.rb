@@ -72,6 +72,54 @@ describe "Locations API" do
       expect(response.code).to eql "201"
       expect(Location.exists?(JSON.parse(response.body)["id"])).to be
     end
+
+    it "requires a city to create" do
+      location = FactoryGirl.build(:location)
+      body = {
+          name: location.name,
+          state: location.state,
+          country: location.country,
+          description: location.description
+      }
+
+      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "requires a state to create" do
+      location = FactoryGirl.build(:location)
+      body = {
+          name: location.name,
+          city: location.city,
+          country: location.country,
+          description: location.description
+      }
+
+      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "requires a country to create" do
+      location = FactoryGirl.build(:location)
+      body = {
+          name: location.name,
+          city: location.city,
+          state: location.state,
+          description: location.description
+      }
+
+      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "requires a name to create" do
+      location = FactoryGirl.build(:location)
+      body = {
+          city: location.city,
+          state: location.state,
+          country: location.country,
+          description: location.description
+      }
+
+      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+    end
   end
 
   context "PUT" do

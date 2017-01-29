@@ -16,7 +16,7 @@ module Api
           render nothing: true, status: :conflict
         else
           @location = Location.new
-          @location.assign_attributes(location_params)
+          @location.assign_attributes(create_params)
           if @location.save
             render json: @location, status: :created
           else
@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @location.update_attributes!(location_params)
+        @location.update_attributes!(update_params)
         if @location.save
           render json: @location, status: :no_content
         else
@@ -49,10 +49,17 @@ module Api
         @location = Location.find(params[:id])
       end
 
-      def location_params
+      def create_params
+        params.require(:name)
+        params.require(:city)
+        params.require(:state)
+        params.require(:country)
         params.permit(:name, :city, :state, :country, :description, :created_by, :banner_image)
       end
 
+      def update_params
+        params.permit(:name, :city, :state, :country, :description, :created_by, :banner_image)
+      end
     end
   end
 end

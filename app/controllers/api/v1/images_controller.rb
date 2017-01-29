@@ -16,7 +16,7 @@ module Api
           render nothing: true, status: :conflict
         else
           @image = Image.new
-          @image.assign_attributes(image_params)
+          @image.assign_attributes(create_params)
           if @image.save
             set_banners
             render json: @image, status: :created
@@ -27,7 +27,7 @@ module Api
       end
 
       def update
-        @image.update_attributes(image_params)
+        @image.update_attributes(update_params)
         if @image.save
           set_banners
           render json: @image, status: :no_content
@@ -47,8 +47,19 @@ module Api
         @image = Image.find(params[:id])
       end
 
-      def image_params
+      def update_params
+        validate_ids
         params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
+      end
+
+      def create_params
+        params.require(:cloudinary_id)
+        validate_ids
+        params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
+      end
+
+      def validate_ids
+        #TODO validate that the IDS match, and populate them all.
       end
 
       def set_banners

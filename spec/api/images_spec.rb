@@ -50,6 +50,16 @@ describe 'Images API' do
     expect(Image.exists?(JSON.parse(response.body)['id'])).to be
   end
 
+  it "requires a couldinary id" do
+    location = FactoryGirl.create(:location)
+    body = {
+        location_id: location.id
+    }
+
+    expect{post "/api/v1/images", body}.to raise_error(ActionController::ParameterMissing)
+
+  end
+
   it "deletes and image" do
     location = FactoryGirl.create(:location)
     item = FactoryGirl.create(:item, location_id: location.id)

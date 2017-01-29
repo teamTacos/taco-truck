@@ -16,7 +16,7 @@ module Api
           render nothing: true, status: :conflict
         else
           @item = Item.new
-          @item.assign_attributes(item_params)
+          @item.assign_attributes(create_params)
           if @item.save
             render json: @item, status: :created
           else
@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @item.update_attributes(item_params)
+        @item.update_attributes(update_params)
         if @item.save
           render json: @item, status: :no_content
         else
@@ -49,7 +49,13 @@ module Api
         @item = Item.find(params[:id])
       end
 
-      def item_params
+      def create_params
+        params.require(:location_id)
+        params.require(:name)
+        params.permit(:name, :description, :location_id, :created_by)
+      end
+
+      def update_params
         params.permit(:name, :description, :location_id, :created_by)
       end
 
