@@ -2,76 +2,75 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Reviews API' do
-  it "sends a list of reviews for an item" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    FactoryGirl.create_list(:review, 3, item_id: item.id)
+  let(:location) { FactoryGirl.create(:location) }
+  let(:item) { FactoryGirl.create(:item, location_id: location.id) }
 
-    get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews"
+  context "GET" do
+    it "sends a list of reviews for an item" do
+      FactoryGirl.create_list(:review, 3, item_id: item.id)
 
-    expect(response).to be_success
-    expect(JSON.parse(response.body).size).to eql 3
+      get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews"
+
+      expect(response).to be_success
+      expect(JSON.parse(response.body).size).to eql 3
+    end
+
+    it "sends a review by id" do
+      review = FactoryGirl.create(:review, item_id: item.id)
+
+      get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
+
+      expect(response.code).to eql "200"
+      expect(response.body).to eql review.to_json
+    end
+
+    it "returns all images" do
+      review = FactoryGirl.create(:review, item_id: item.id)
+      FactoryGirl.create_list(:image, 4, location_id: location.id, review_id: review.id)
+
+      get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
+
+      expect(response.code).to eql "200"
+      expect(JSON.parse(response.body)['all_images'].count).to eql 4
+    end
   end
 
-  it "sends a review by id" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.create(:review, item_id: item.id)
+  context "POST" do
+    it "creates an review" do
+      review = FactoryGirl.build(:review, item_id: item.id)
+      body = {
+          item_id: item.id,
+          description: review.description,
+          rating: review.rating
+      }
 
-    get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
+      post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body
 
-    expect(response.code).to eql "200"
-    expect(response.body).to eql review.to_json
+      expect(response.code).to eql "201"
+      expect(Review.exists?(JSON.parse(response.body)['id'])).to be
+    end
   end
 
-  it "creates an review" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.build(:review, item_id: item.id)
-    body = {
-        item_id: item.id,
-        description: review.description,
-        rating: review.rating
-    }
+  context "PUT" do
+    it "updates a review" do
+      review = FactoryGirl.create(:review, item_id: item.id)
+      review.description = Faker::Lorem.sentence
 
-    post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body
+      put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", JSON.parse(review.to_json)
 
-    expect(response.code).to eql "201"
-    expect(Review.exists?(JSON.parse(response.body)['id'])).to be
+      expect(response.code).to eql "204"
+      expect(Review.find(review.id).description).to eql review.description
+    end
   end
 
-  it "updates a review" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.create(:review, item_id: item.id)
-    review.description = Faker::Lorem.sentence
+  context "DELETE" do
+    it "deletes an review" do
+      review = FactoryGirl.create(:review, item_id: item.id)
 
-    put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", JSON.parse(review.to_json)
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
 
-    expect(response.code).to eql "204"
-    expect(Review.find(review.id).description).to eql review.description
-  end
-
-  it "deletes an review" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.create(:review, item_id: item.id)
-
-    delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
-
-    expect(response.code).to eql "204"
-    expect(Review.exists?(review.id)).to be false
-  end
-
-  it "returns all images" do
-    location = FactoryGirl.create(:location)
-    item = FactoryGirl.create(:item, location_id: location.id)
-    review = FactoryGirl.create(:review, item_id: item.id)
-    FactoryGirl.create_list(:image, 4, location_id: location.id, review_id: review.id)
-
-    get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
-
-    expect(response.code).to eql "200"
-    expect(JSON.parse(response.body)['all_images'].count).to eql 4
+      expect(response.code).to eql "204"
+      expect(Review.exists?(review.id)).to be false
+    end
   end
 end
