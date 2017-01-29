@@ -16,7 +16,7 @@ module Api
           render nothing: true, status: :conflict
         else
           @review = Review.new
-          @review.assign_attributes(review_params)
+          @review.assign_attributes(create_params)
           if @review.save
             render json: @review, status: :created
           else
@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        @review.update_attributes(review_params)
+        @review.update_attributes(update_params)
         if @review.save
           render json: @review, status: :no_content
         else
@@ -45,7 +45,15 @@ module Api
         @review = Review.find(params[:id])
       end
 
-      def review_params
+      def update_params
+        params.require(:item_id)
+        params.permit(:description, :rating, :item_id)
+      end
+
+      def create_params
+        params.require(:item_id)
+        params.require(:rating)
+        params.require(:description)
         params.permit(:description, :rating, :item_id)
       end
 

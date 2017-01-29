@@ -2,7 +2,6 @@ require_relative "../rails_helper"
 require_relative "../spec_helper"
 
 describe "Locations API" do
-
   let(:location) { FactoryGirl.create(:location) }
   let(:item) { FactoryGirl.create(:item, location_id: location.id) }
 

@@ -49,6 +49,26 @@ describe 'Reviews API' do
       expect(response.code).to eql "201"
       expect(Review.exists?(JSON.parse(response.body)['id'])).to be
     end
+
+    it "requires description" do
+      review = FactoryGirl.build(:review, item_id: item.id)
+      body = {
+          item_id: item.id,
+          rating: review.rating
+      }
+
+      expect{ post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "requires rating" do
+      review = FactoryGirl.build(:review, item_id: item.id)
+      body = {
+          item_id: item.id,
+          description: review.description,
+      }
+
+      expect{ post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
+    end
   end
 
   context "PUT" do

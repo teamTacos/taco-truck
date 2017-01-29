@@ -2,7 +2,6 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Locations API' do
-
   let(:location) { FactoryGirl.create(:location) }
   let(:item) { FactoryGirl.create(:item, location_id: location.id) }
 
@@ -60,6 +59,15 @@ describe 'Locations API' do
 
       expect(response.code).to eql "201"
       expect(Item.exists?(JSON.parse(response.body)['id'])).to be
+    end
+
+    it "requires a name to create" do
+      item = FactoryGirl.build(:item, location_id: location.id)
+      body = {
+          description: item.description
+      }
+
+      expect{post "/api/v1/locations/#{location.id}/items", body}.to raise_error(ActionController::ParameterMissing)
     end
   end
 
