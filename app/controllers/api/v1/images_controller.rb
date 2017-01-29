@@ -14,6 +14,8 @@ module Api
       def create
         if @image.present?
           render nothing: true, status: :conflict
+        elsif !validate_ids
+          render json: { error: "Invalid id combination." }, status: :bad_request
         else
           @image = Image.new
           @image.assign_attributes(create_params)
@@ -27,12 +29,16 @@ module Api
       end
 
       def update
-        @image.update_attributes(update_params)
-        if @image.save
-          set_banners
-          render json: @image, status: :no_content
+        if !validate_ids
+          render json: { error: "Invalid id combination." }, status: :bad_request
         else
-          render nothing: true, status: :bad_request
+          @image.update_attributes(update_params)
+          if @image.save
+            set_banners
+            render json: @image, status: :no_content
+          else
+            render nothing: true, status: :bad_request
+          end
         end
       end
 
@@ -48,18 +54,44 @@ module Api
       end
 
       def update_params
-        validate_ids
         params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
       end
 
       def create_params
         params.require(:cloudinary_id)
-        validate_ids
         params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
       end
 
       def validate_ids
-        #TODO validate that the IDS match, and populate them all.
+        if !params[:review_id].blank?
+          return false unless validate_review_ids
+        elsif !params[:item_id].blank?
+          return false unless validate_item_and_location_ids
+        elsif !params[:location_id]
+          false
+        end
+        true
+      end
+
+      def validate_review_ids
+        review = Review.find(params[:review_id])
+        if params[:item_id]
+          return false if review.item_id.to_s != params[:item_id].to_s
+        else
+          params[:item_id] = review.item_id
+        end
+        return false unless validate_item_and_location_ids
+        true
+      end
+
+      def validate_item_and_location_ids
+        item = Item.find(params[:item_id])
+        if params[:location_id]
+          return false if Item.find(item.id).location_id.to_s != params[:location_id].to_s
+        else
+          params[:location_id] = Item.find(item.id).location_id
+        end
+        true
       end
 
       def set_banners
