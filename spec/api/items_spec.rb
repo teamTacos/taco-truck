@@ -16,7 +16,7 @@ describe 'Locations API' do
     end
 
     it "sends a item by id" do
-       get "/api/v1/locations/#{location.id}/items/#{item.id}"
+      get "/api/v1/locations/#{location.id}/items/#{item.id}"
 
       expect(response.code).to eql "200"
       expect(response.body).to eql item.to_json
@@ -67,7 +67,7 @@ describe 'Locations API' do
           description: item.description
       }
 
-      expect{post "/api/v1/locations/#{location.id}/items", body}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items", body }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -92,7 +92,6 @@ describe 'Locations API' do
   end
 
   context "DELETE" do
-
     it "deletes an item" do
       delete "/api/v1/locations/#{location.id}/items/#{item.id}"
 
@@ -107,6 +106,15 @@ describe 'Locations API' do
 
       expect(response.code).to eql "406"
       expect(JSON.parse(response.body)['errors']).to eql 'Cannot delete Item that has Reviews.'
+    end
+
+    it "deletes all item associated images" do
+      FactoryGirl.create_list(:image, 4, item_id: item.id)
+
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}"
+
+      expect(response.code).to eql "204"
+      expect(Image.where(item_id: item.id).count).to eql 0
     end
   end
 end

@@ -38,6 +38,7 @@ module Api
         if @item.reviews_count > 0
           render json: { errors: 'Cannot delete Item that has Reviews.' }, status: :not_acceptable
         else
+          @item.remove_images
           @item.delete
           render nothing: true, status: :no_content
         end

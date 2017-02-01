@@ -26,4 +26,7 @@ class Item < ActiveRecord::Base
     images
   end
 
+  def remove_images
+    images.delete_all
+  end
 end

@@ -13,4 +13,8 @@ class Review < ActiveRecord::Base
   def all_images
     images
   end
+
+  def remove_images
+    images.delete_all
+  end
 end

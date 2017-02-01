@@ -35,6 +35,7 @@ module Api
       end
 
       def destroy
+        @review.remove_images
         @review.delete
         render nothing: true, status: :no_content
       end

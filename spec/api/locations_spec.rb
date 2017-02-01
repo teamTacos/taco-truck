@@ -59,12 +59,12 @@ describe "Locations API" do
     it "creates a location" do
       location = FactoryGirl.build(:location)
       body = {
-              name: location.name,
-              city: location.city,
-              state: location.state,
-              country: location.country,
-              description: location.description
-              }
+          name: location.name,
+          city: location.city,
+          state: location.state,
+          country: location.country,
+          description: location.description
+      }
 
       post "/api/v1/locations", body
 
@@ -81,7 +81,7 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", body }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a state to create" do
@@ -93,7 +93,7 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", body }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a country to create" do
@@ -105,7 +105,7 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", body }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a name to create" do
@@ -117,7 +117,7 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect{post "/api/v1/locations", body}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", body }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -156,6 +156,15 @@ describe "Locations API" do
 
       expect(response.code).to eql "406"
       expect(JSON.parse(response.body)["errors"]).to eql "Cannot delete Location that has Items."
+    end
+
+    it "deletes all location associated images" do
+      FactoryGirl.create_list(:image, 4, location_id: location.id)
+
+      delete "/api/v1/locations/#{location.id}"
+
+      expect(response.code).to eql "204"
+      expect(Image.where(location_id: location.id).count).to eql 0
     end
   end
 end

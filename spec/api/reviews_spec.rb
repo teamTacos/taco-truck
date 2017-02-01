@@ -57,7 +57,7 @@ describe 'Reviews API' do
           rating: review.rating
       }
 
-      expect{ post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires rating" do
@@ -67,7 +67,7 @@ describe 'Reviews API' do
           description: review.description,
       }
 
-      expect{ post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -91,6 +91,16 @@ describe 'Reviews API' do
 
       expect(response.code).to eql "204"
       expect(Review.exists?(review.id)).to be false
+    end
+
+    it "deletes all review associated images" do
+      review = FactoryGirl.create(:review, item_id: item.id)
+      FactoryGirl.create_list(:image, 4, review_id: review.id)
+
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
+
+      expect(response.code).to eql "204"
+      expect(Image.where(review_id: review.id).count).to eql 0
     end
   end
 end

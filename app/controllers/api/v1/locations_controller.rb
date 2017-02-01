@@ -38,6 +38,7 @@ module Api
         if @location.items_count > 0
           render json: { errors: 'Cannot delete Location that has Items.' }, status: :not_acceptable
         else
+          @location.remove_images
           @location.delete
           render nothing: true, status: :no_content
         end
