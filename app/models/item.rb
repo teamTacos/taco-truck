@@ -27,6 +27,9 @@ class Item < ActiveRecord::Base
   end
 
   def remove_images
-    images.delete_all
+    if images.count > 0
+      ImageCloudHelper.remove_images_by_id(images)
+      images.delete_all
+    end
   end
 end
