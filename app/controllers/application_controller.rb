@@ -2,7 +2,7 @@ require 'rest-client'
 
 class ApplicationController < ActionController::Base
   include Pundit
-  before_filter :verify_token
+  before_filter :verify_token, only: [:destroy, :update, :create]
 
   def verify_token
     render json: "Bad or Missing Credentials", status: 401 unless bearer_token
@@ -24,12 +24,8 @@ class ApplicationController < ActionController::Base
   end
 
   def find_or_create_user(fb_user)
-    user = User.find_by(email: fb_user["email"], fb_user_id: fb_user["id"])
-    if user
-      user
-    else
-      create_user(fb_user)
-    end
+    user = User.find_by(fb_user_id: fb_user["id"])
+    user ? user : create_user(fb_user)
   end
 
   def create_user(fb_user)

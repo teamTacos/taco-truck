@@ -2,16 +2,16 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Images API' do
-  let(:user) { FactoryGirl.create(:user, email: "adairjk@yahoo.com", fb_user_id: "10208972170956420") }
+  let(:user) { FactoryGirl.create(:user, email: "fake@fakeremail.com", fb_user_id: "10208475170966410") }
   let(:location) { FactoryGirl.create(:location, user_id: user.id) }
   let(:item) { FactoryGirl.create(:item, location_id: location.id, user_id: user.id) }
   let(:review) { FactoryGirl.create(:review, item_id: item.id, user_id: user.id) }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "adairjk@yahoo.com",
-                                                                                                        "first_name" => "Jarod",
-                                                                                                        "last_name" => "Adair",
-                                                                                                        "id" => "10208972170956420"
+    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "fake@fakeremail.com",
+                                                                                                        "first_name" => "Booger",
+                                                                                                        "last_name" => "Picker",
+                                                                                                        "id" => "10208475170966410"
                                                                                                        })
   end
 
@@ -19,7 +19,7 @@ describe 'Images API' do
      it "sends a list of images for a location" do
        FactoryGirl.create_list(:image, 3, item_id: item.id, location_id: location.id, review_id: review.id)
   
-       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+       get "/api/v1/images"
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 3
@@ -28,7 +28,7 @@ describe 'Images API' do
      it "sends a list of images for a review" do
        FactoryGirl.create_list(:image, 4, item_id: item.id, location_id: location.id, review_id: review.id)
   
-       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+       get "/api/v1/images"
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 4
@@ -37,7 +37,7 @@ describe 'Images API' do
      it "sends a list of images for an item" do
        FactoryGirl.create_list(:image, 2, item_id: item.id, location_id: location.id)
   
-       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+       get "/api/v1/images"
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 2
@@ -46,7 +46,7 @@ describe 'Images API' do
      it "sends and image by id" do
        image = FactoryGirl.create(:image, location_id: location.id, user_id: user.id)
   
-       get "/api/v1/images/#{image.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+       get "/api/v1/images/#{image.id}"
   
        expect(response.code).to eql "200"
        expect(response.body).to eql image.to_json
@@ -105,7 +105,7 @@ describe 'Images API' do
       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
       expect(response.code).to eql "400"
-      expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
+      expect(JSON.parse(response.body)['error']).to eql "Invalid ID combination."
     end
 
      it "requires review and location ids to be valid combination" do
@@ -121,7 +121,7 @@ describe 'Images API' do
        post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
        expect(response.code).to eql "400"
-       expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
+       expect(JSON.parse(response.body)['error']).to eql "Invalid ID combination."
      end
 
      it "requires item and location ids to be valid combination" do
@@ -137,7 +137,7 @@ describe 'Images API' do
        post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
        expect(response.code).to eql "400"
-       expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
+       expect(JSON.parse(response.body)['error']).to eql "Invalid ID combination."
      end
 
      it "sets item_banner field" do

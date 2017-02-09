@@ -2,15 +2,15 @@ require_relative "../rails_helper"
 require_relative "../spec_helper"
 
 describe "Locations API" do
-  let(:user) { FactoryGirl.create(:user, email: "adairjk@yahoo.com", fb_user_id: "10208972170956420") }
+  let(:user) { FactoryGirl.create(:user, email: "fake@fakeremail.com", fb_user_id: "10208475170966410") }
   let(:location) { FactoryGirl.create(:location, user_id: user.id) }
   let(:item) { FactoryGirl.create(:item, location_id: location.id, user_id: user.id) }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "adairjk@yahoo.com",
-                                                                                                        "first_name" => "Jarod",
-                                                                                                        "last_name" => "Adair",
-                                                                                                        "id" => "10208972170956420"
+    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "fake@fakeremail.com",
+                                                                                                        "first_name" => "Booger",
+                                                                                                        "last_name" => "Picker",
+                                                                                                        "id" => "10208475170966410"
                                                                                                        })
   end
 
@@ -18,7 +18,7 @@ describe "Locations API" do
     it "returns all images" do
       FactoryGirl.create_list(:image, 4, location_id: location.id)
 
-      get "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations/#{location.id}"
 
       expect(response.code).to eql "200"
       expect(JSON.parse(response.body)["all_images"].count).to eql 4
@@ -27,14 +27,14 @@ describe "Locations API" do
     it "sends a list of locations" do
       FactoryGirl.create_list(:location, 5)
 
-      get "/api/v1/locations", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations"
 
       expect(response).to be_success
       expect(JSON.parse(response.body).size).to eql 5
     end
 
     it "sends a location by id" do
-      get "/api/v1/locations/#{location.id}", {}, { "Authorization" => "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations/#{location.id}"
 
       expect(response).to be_success
       expect(response.body).to eql location.to_json
@@ -43,7 +43,7 @@ describe "Locations API" do
     it "returns the count of the reviews" do
       FactoryGirl.create_list(:review, 6, item_id: item.id, rating: 3)
 
-      get "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations/#{location.id}"
 
       expect(JSON.parse(response.body)["reviews_count"]).to eql 6
     end
@@ -51,14 +51,14 @@ describe "Locations API" do
     it "returns a count of the items" do
       FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
 
-      get "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations/#{location.id}"
       expect(JSON.parse(response.body)["items_count"]).to eql 1
     end
 
     it "returns the average of the ratings" do
       FactoryGirl.create_list(:review, 5, item_id: item.id, rating: 3)
 
-      get "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/locations/#{location.id}"
 
       expect(JSON.parse(response.body)["reviews_average"]).to eql 3
     end

@@ -15,7 +15,7 @@ module Api
         if @image.present?
           render nothing: true, status: :conflict
         elsif !validate_ids
-          render json: { error: "Invalid id combination." }, status: :bad_request
+          render json: { error: "Invalid ID combination." }, status: :bad_request
         else
           @image = Image.new
           @image.assign_attributes(create_params)
@@ -31,7 +31,7 @@ module Api
       def update
         authorize @image
         if !validate_ids
-          render json: { error: "Invalid id combination." }, status: :bad_request
+          render json: { error: "Invalid ID combination." }, status: :bad_request
         else
           @image.update_attributes(update_params)
           if @image.save

@@ -2,25 +2,22 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Users API' do
-  let(:user) { FactoryGirl.create(:user, email: "adairjk@yahoo.com", fb_user_id: "10208972170956420") }
+  let(:user) { FactoryGirl.create(:user, email: "fake@fakeremail.com", fb_user_id: "10208475170966410") }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "adairjk@yahoo.com",
-                                                                                                        "first_name" => "Jarod",
-                                                                                                        "last_name" => "Adair",
-                                                                                                        "id" => "10208972170956420"
+    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "fake@fakeremail.com",
+                                                                                                        "first_name" => "Booger",
+                                                                                                        "last_name" => "Picker",
+                                                                                                        "id" => "10208475170966410"
                                                                                                        })
   end
 
   context "GET" do
     it "returns a user record by id" do
-      get "/api/v1/users/#{user.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      get "/api/v1/users/#{user.id}"
 
       expect(response.code).to eql "200"
       expect(response.body).to eql user.to_json
-    end
-
-    it "returns all images" do
     end
   end
 
