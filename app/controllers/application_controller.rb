@@ -5,10 +5,13 @@ class ApplicationController < ActionController::Base
   before_filter :verify_token, only: [:destroy, :update, :create]
 
   def verify_token
-    render json: "Bad or Missing Credentials", status: 401 unless bearer_token
     fb_user = verify_facebook_signon_status
-    user = find_or_create_user(fb_user)
-    session[:current_user] = user
+    if fb_user
+      user = find_or_create_user(fb_user)
+      session[:current_user] = user
+    else
+      render json: {"error":"Bad or Missing Credentials"}, status: :unauthorized
+    end
   end
 
   def current_user
@@ -41,7 +44,12 @@ class ApplicationController < ActionController::Base
   end
 
   def verify_facebook_signon_status
-    response = RestClient.get "https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=#{bearer_token}"
-    JSON.parse(response.body)
+    begin
+      return false unless bearer_token
+      response = RestClient.get "https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=#{bearer_token}"
+      JSON.parse(response.body)
+    rescue RestClient::BadRequest
+      false
+    end
   end
 end
