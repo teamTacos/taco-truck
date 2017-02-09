@@ -29,7 +29,6 @@ describe 'Users API' do
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
-          access_token: user.access_token
       }
 
       post "/api/v1/users", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
@@ -44,7 +43,6 @@ describe 'Users API' do
           fb_user_id: user.fb_user_id,
           first_name: user.first_name,
           last_name: user.last_name,
-          access_token: user.access_token
       }
 
       expect { post "/api/v1/users", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
@@ -56,7 +54,6 @@ describe 'Users API' do
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
-          access_token: user.access_token
       }
 
       expect { post "/api/v1/users", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
@@ -68,7 +65,6 @@ describe 'Users API' do
           fb_user_id: user.fb_user_id,
           email: user.email,
           last_name: user.last_name,
-          access_token: user.access_token
       }
 
       expect { post "/api/v1/users", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
@@ -80,7 +76,6 @@ describe 'Users API' do
           fb_user_id: user.fb_user_id,
           email: user.email,
           first_name: user.first_name,
-          access_token: user.access_token
       }
 
       expect { post "/api/v1/users", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
