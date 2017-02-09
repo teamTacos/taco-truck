@@ -26,6 +26,7 @@ module Api
       end
 
       def update
+        authorize @location
         @location.update_attributes!(update_params)
         if @location.save
           render json: @location, status: :no_content
@@ -35,6 +36,7 @@ module Api
       end
 
       def destroy
+        authorize @location
         if @location.items_count > 0
           render json: { errors: 'Cannot delete Location that has Items.' }, status: :not_acceptable
         else
@@ -51,6 +53,7 @@ module Api
       end
 
       def create_params
+        params[:user_id] = session[:current_user][:id]
         params.require(:name)
         params.require(:city)
         params.require(:state)

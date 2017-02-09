@@ -5,20 +5,21 @@ FactoryGirl.define do
     state { Faker::Address.state_abbr }
     country { Faker::Address.country }
     description { Faker::Lorem.paragraph }
-    created_by { Faker::Name.name }
+    user_id 1
   end
 
   factory :item do
     location_id 0
     name { Faker::Commerce.product_name }
     description { Faker::Lorem.paragraph }
-    created_by { Faker::Name.name }
+    user_id 1
   end
 
   factory :review do
     item_id 0
     description { Faker::Lorem.paragraph }
     rating { rand(0..5) }
+    user_id 1
   end
 
   factory :image do
@@ -26,5 +27,14 @@ FactoryGirl.define do
     location_id nil
     review_id nil
     cloudinary_id { Faker::Lorem.characters(20) }
+    user_id 1
+  end
+
+  factory :user do
+    fb_user_id { Faker::Lorem.characters(20) }
+    first_name { Faker::Name.first_name  }
+    last_name { Faker::Name.last_name  }
+    email { Faker::Internet.email }
+    access_token { Faker::Lorem.characters(20) }
   end
 end

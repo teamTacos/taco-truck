@@ -29,6 +29,7 @@ module Api
       end
 
       def update
+        authorize @image
         if !validate_ids
           render json: { error: "Invalid id combination." }, status: :bad_request
         else
@@ -43,6 +44,7 @@ module Api
       end
 
       def destroy
+        authorize @image
         @image.delete
         render nothing: true, status: :no_content
       end
@@ -59,7 +61,9 @@ module Api
 
       def create_params
         params.require(:cloudinary_id)
-        params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner, :review_banner)
+        params[:user_id] = session[:current_user][:id]
+        params.permit(:cloudinary_id, :review_id, :item_id, :location_id, :location_banner, :item_banner,
+                      :review_banner, :user_id)
       end
 
       def validate_ids

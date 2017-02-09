@@ -96,6 +96,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (1.6.4)
     rack-cors (0.4.0)
     rack-test (0.6.3)
@@ -198,6 +200,7 @@ DEPENDENCIES
   json
   pg
   pry
+  pundit
   rack-cors
   rails (= 4.2.1)
   rspec-rails (~> 3.0)

@@ -26,6 +26,7 @@ module Api
       end
 
       def update
+        authorize @review
         @review.update_attributes(update_params)
         if @review.save
           render json: @review, status: :no_content
@@ -35,6 +36,7 @@ module Api
       end
 
       def destroy
+        authorize @review
         @review.remove_images
         @review.delete
         render nothing: true, status: :no_content
@@ -52,6 +54,7 @@ module Api
       end
 
       def create_params
+        params[:user_id] = session[:current_user][:id]
         params.require(:item_id)
         params.require(:rating)
         params.require(:description)

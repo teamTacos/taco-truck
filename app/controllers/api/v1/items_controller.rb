@@ -26,6 +26,7 @@ module Api
       end
 
       def update
+        authorize @item
         @item.update_attributes(update_params)
         if @item.save
           render json: @item, status: :no_content
@@ -35,6 +36,7 @@ module Api
       end
 
       def destroy
+        authorize @item
         if @item.reviews_count > 0
           render json: { errors: 'Cannot delete Item that has Reviews.' }, status: :not_acceptable
         else
@@ -51,6 +53,7 @@ module Api
       end
 
       def create_params
+        params[:user_id] = session[:current_user][:id]
         params.require(:location_id)
         params.require(:name)
         params.permit(:name, :description, :location_id, :created_by)

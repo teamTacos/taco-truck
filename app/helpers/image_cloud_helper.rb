@@ -16,6 +16,7 @@ module ImageCloudHelper
   end
 
   def self.auth
+    #TODO Lets get these in the env variables.
     {
         cloud_name: "dfavubcrx",
         api_key: "832385562517142",

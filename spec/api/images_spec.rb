@@ -2,15 +2,24 @@ require_relative '../rails_helper'
 require_relative '../spec_helper'
 
 describe 'Images API' do
-  let(:location) { FactoryGirl.create(:location) }
-  let(:item) { FactoryGirl.create(:item, location_id: location.id) }
-  let(:review) { FactoryGirl.create(:review, item_id: item.id) }
+  let(:user) { FactoryGirl.create(:user, email: "adairjk@yahoo.com", fb_user_id: "10208972170956420") }
+  let(:location) { FactoryGirl.create(:location, user_id: user.id) }
+  let(:item) { FactoryGirl.create(:item, location_id: location.id, user_id: user.id) }
+  let(:review) { FactoryGirl.create(:review, item_id: item.id, user_id: user.id) }
+
+  before(:each) do
+    allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "adairjk@yahoo.com",
+                                                                                                        "first_name" => "Jarod",
+                                                                                                        "last_name" => "Adair",
+                                                                                                        "id" => "10208972170956420"
+                                                                                                       })
+  end
 
    context "GET" do
      it "sends a list of images for a location" do
        FactoryGirl.create_list(:image, 3, item_id: item.id, location_id: location.id, review_id: review.id)
   
-       get "/api/v1/images"
+       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 3
@@ -19,7 +28,7 @@ describe 'Images API' do
      it "sends a list of images for a review" do
        FactoryGirl.create_list(:image, 4, item_id: item.id, location_id: location.id, review_id: review.id)
   
-       get "/api/v1/images"
+       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 4
@@ -28,16 +37,16 @@ describe 'Images API' do
      it "sends a list of images for an item" do
        FactoryGirl.create_list(:image, 2, item_id: item.id, location_id: location.id)
   
-       get "/api/v1/images"
+       get "/api/v1/images", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response).to be_success
        expect(JSON.parse(response.body).size).to eql 2
      end
   
      it "sends and image by id" do
-       image = FactoryGirl.create(:image, location_id: location.id)
+       image = FactoryGirl.create(:image, location_id: location.id, user_id: user.id)
   
-       get "/api/v1/images/#{image.id}"
+       get "/api/v1/images/#{image.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "200"
        expect(response.body).to eql image.to_json
@@ -52,7 +61,7 @@ describe 'Images API' do
            location_id: location.id
        }
   
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "201"
        expect(Image.exists?(JSON.parse(response.body)['id'])).to be
@@ -63,7 +72,7 @@ describe 'Images API' do
            location_id: location.id
        }
   
-       expect{post "/api/v1/images", body}.to raise_error(ActionController::ParameterMissing)
+       expect{post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }}.to raise_error(ActionController::ParameterMissing)
      end
 
     it "sets review_banner field" do
@@ -75,7 +84,7 @@ describe 'Images API' do
           review_banner: 1
       }
 
-      post "/api/v1/images", body
+      post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
       expect(response.code).to eql "201"
       expect(Image.find(JSON.parse(response.body)['id'])['review_banner']).to eql 1
@@ -93,7 +102,7 @@ describe 'Images API' do
           review_banner: 1
       }
 
-      post "/api/v1/images", body
+      post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
       expect(response.code).to eql "400"
       expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
@@ -109,7 +118,7 @@ describe 'Images API' do
            review_banner: 1
        }
 
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
        expect(response.code).to eql "400"
        expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
@@ -125,7 +134,7 @@ describe 'Images API' do
            review_banner: 1
        }
 
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
        expect(response.code).to eql "400"
        expect(JSON.parse(response.body)['error']).to eql "Invalid id combination."
@@ -139,7 +148,7 @@ describe 'Images API' do
            item_banner: 1
        }
   
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "201"
        expect(Image.find(JSON.parse(response.body)['id'])['item_banner']).to eql 1
@@ -152,7 +161,7 @@ describe 'Images API' do
            location_banner: 1
        }
   
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "201"
        expect(Image.find(JSON.parse(response.body)['id'])['location_banner']).to eql 1
@@ -166,7 +175,7 @@ describe 'Images API' do
            location_banner: 1
        }
   
-       post "/api/v1/images", body
+       post "/api/v1/images", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "201"
        images = Image.where(location_id: location.id)
@@ -178,11 +187,17 @@ describe 'Images API' do
   
    context "DELETE" do
      it "deletes and image" do
-       image = FactoryGirl.create(:image, item_id: item.id, location_id: location.id, review_id: review.id)
-       delete "/api/v1/images/#{image.id}"
+       image = FactoryGirl.create(:image, item_id: item.id, location_id: location.id, review_id: review.id, user_id: user.id)
+       delete "/api/v1/images/#{image.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
   
        expect(response.code).to eql "204"
        expect(Image.exists?(image.id)).to be false
+     end
+
+     it "will not delete an image owned by a different user" do
+       user2 = FactoryGirl.create(:user)
+       image = FactoryGirl.create(:image, user_id: user2.id)
+       expect { delete "/api/v1/images/#{image.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(Pundit::NotAuthorizedError)
      end
   end
 end
