@@ -65,6 +65,15 @@ describe "Locations API" do
   end
 
   context "POST" do
+    it "requires a token to create" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      post "/api/v1/locations", {}, { "Authorization" => '' }
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "creates a location" do
       location = FactoryGirl.build(:location)
       body = {
@@ -131,6 +140,15 @@ describe "Locations API" do
   end
 
   context "PUT" do
+    it "requires a token to update" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      put "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "updates a location name" do
       location.name = Faker::Name.name
 
@@ -142,6 +160,15 @@ describe "Locations API" do
   end
 
   context "DELETE" do
+    it "requires a token to delete" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      delete "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "deletes a location" do
       delete "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 
@@ -149,7 +176,7 @@ describe "Locations API" do
       expect(Location.exists?(location.id)).to be false
     end
 
-    it "will not delete a location that is owned by a differnt user" do
+    it "will not delete a location that is owned by a different user" do
       user2 = FactoryGirl.create(:user)
       location2 = FactoryGirl.create(:location, user_id: user2.id)
 

@@ -54,6 +54,15 @@ describe 'Images API' do
    end
   
    context "POST" do
+     it "requires a token to create" do
+       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+       post "/api/v1/images", {}, { "Authorization" => '' }
+
+       expect(response.code).to eql "401"
+       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+     end
+
      it "creates an image" do
        location = FactoryGirl.create(:location)
        body = {
@@ -186,6 +195,16 @@ describe 'Images API' do
    end
   
    context "DELETE" do
+     it "requires a token to delete" do
+       image = FactoryGirl.create(:image, item_id: item.id, location_id: location.id, review_id: review.id, user_id: user.id)
+       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+       delete "/api/v1/images/#{image.id}", {}, { "Authorization" => '' }
+
+       expect(response.code).to eql "401"
+       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+     end
+
      it "deletes and image" do
        image = FactoryGirl.create(:image, item_id: item.id, location_id: location.id, review_id: review.id, user_id: user.id)
        delete "/api/v1/images/#{image.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }

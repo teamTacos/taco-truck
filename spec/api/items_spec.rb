@@ -57,6 +57,15 @@ describe 'Locations API' do
   end
 
   context "POST" do
+    it "required a token to create" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      post "/api/v1/locations/#{location.id}/items"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "creates an item" do
       item = FactoryGirl.build(:item, location_id: location.id)
       body = {
@@ -81,6 +90,15 @@ describe 'Locations API' do
   end
 
   context "PUT" do
+    it "required a token to update" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      put "/api/v1/locations/#{location.id}/items/#{item.id}"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "updates an item" do
       item.name = Faker::Name.name
 
@@ -92,6 +110,15 @@ describe 'Locations API' do
   end
 
   context "DELETE" do
+    it "required a token to delete" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "deletes an item" do
       delete "/api/v1/locations/#{location.id}/items/#{item.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 

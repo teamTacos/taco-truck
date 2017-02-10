@@ -22,6 +22,15 @@ describe 'Users API' do
   end
 
   context "POST" do
+    it "required a token to create" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      post "/api/v1/users"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "creates a user" do
       user = FactoryGirl.build(:user)
       body = {
@@ -83,6 +92,15 @@ describe 'Users API' do
   end
 
   context "PUT" do
+    it "required a token to update" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      put "/api/v1/users/#{user.id}"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "updates a user record" do
       user.first_name = Faker::Name.first_name
 
@@ -94,6 +112,15 @@ describe 'Users API' do
   end
 
   context "DELETE" do
+    it "required a token to delete" do
+      allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
+
+      delete "/api/v1/users/#{user.id}"
+
+      expect(response.code).to eql "401"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+    end
+
     it "deletes a user record" do
       delete "/api/v1/users/#{user.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
 

@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
       user = find_or_create_user(fb_user)
       session[:current_user] = user
     else
-      render json: {"error":"Bad or Missing Credentials"}, status: :unauthorized
+      render json: {error: "Bad or Missing Credentials"}, status: :unauthorized
     end
   end
 
