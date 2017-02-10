@@ -21,11 +21,9 @@ describe 'Application Controller' do
       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return(false)
       allow_any_instance_of(ApplicationController).to receive(:find_or_create_user).and_return(user)
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({})
-      post "/api/v1/locations", {}, { "Authorization" => '' }
+      post "/api/v1/locations"
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
   end
-
 end
-

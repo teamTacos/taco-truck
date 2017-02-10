@@ -71,7 +71,7 @@ describe "Locations API" do
       post "/api/v1/locations", {}, { "Authorization" => '' }
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "creates a location" do
@@ -146,7 +146,7 @@ describe "Locations API" do
       put "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "updates a location name" do
@@ -166,7 +166,7 @@ describe "Locations API" do
       delete "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "deletes a location" do

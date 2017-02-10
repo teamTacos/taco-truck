@@ -60,7 +60,7 @@ describe 'Images API' do
        post "/api/v1/images", {}, { "Authorization" => '' }
 
        expect(response.code).to eql "401"
-       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
      end
 
      it "creates an image" do
@@ -202,7 +202,7 @@ describe 'Images API' do
        delete "/api/v1/images/#{image.id}", {}, { "Authorization" => '' }
 
        expect(response.code).to eql "401"
-       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
      end
 
      it "deletes and image" do

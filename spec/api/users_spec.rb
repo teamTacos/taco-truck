@@ -28,7 +28,7 @@ describe 'Users API' do
       post "/api/v1/users"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "creates a user" do
@@ -98,7 +98,7 @@ describe 'Users API' do
       put "/api/v1/users/#{user.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "updates a user record" do
@@ -118,7 +118,7 @@ describe 'Users API' do
       delete "/api/v1/users/#{user.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "deletes a user record" do

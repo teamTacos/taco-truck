@@ -51,7 +51,7 @@ describe 'Reviews API' do
       post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "creates an review" do
@@ -97,7 +97,7 @@ describe 'Reviews API' do
       put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "updates a review" do
@@ -119,7 +119,7 @@ describe 'Reviews API' do
       delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "deletes an review" do

@@ -63,7 +63,7 @@ describe 'Locations API' do
       post "/api/v1/locations/#{location.id}/items"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "creates an item" do
@@ -96,7 +96,7 @@ describe 'Locations API' do
       put "/api/v1/locations/#{location.id}/items/#{item.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "updates an item" do
@@ -116,7 +116,7 @@ describe 'Locations API' do
       delete "/api/v1/locations/#{location.id}/items/#{item.id}"
 
       expect(response.code).to eql "401"
-      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials"
+      expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "deletes an item" do
