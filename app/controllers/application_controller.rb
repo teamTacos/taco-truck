@@ -1,4 +1,5 @@
 require 'rest-client'
+require 'cgi'
 
 class ApplicationController < ActionController::Base
   include Pundit
@@ -47,7 +48,9 @@ class ApplicationController < ActionController::Base
     begin
       return false unless bearer_token
       response = RestClient.get "https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=#{bearer_token}"
-      JSON.parse(response.body)
+      user_attributes = JSON.parse(response.body)
+      user_attributes["email"] = CGI.unescape(user_attributes["email"])
+      user_attributes
     rescue RestClient::BadRequest
       false
     end
