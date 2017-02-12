@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users do
-        resources :images, :items, :reviews, :locations
+        resources :images, :items, :reviews, :locations, :favorites
       end
       resources :images do
       end

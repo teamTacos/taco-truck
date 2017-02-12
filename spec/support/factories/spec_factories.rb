@@ -36,4 +36,12 @@ FactoryGirl.define do
     last_name { Faker::Name.last_name  }
     email { Faker::Internet.email }
   end
+
+  factory :favorite do
+    user_id nil
+    location_id nil
+    item_id nil
+    review_id nil
+    image_id nil
+  end
 end
