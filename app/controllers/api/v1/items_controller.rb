@@ -4,7 +4,7 @@ module Api
       before_filter :find_item, only: [:show, :update, :destroy]
 
       def index
-        render json: Item.where(location_id: params[:location_id])
+        render json: Item.where(query_params)
       end
 
       def show
@@ -63,6 +63,9 @@ module Api
         params.permit(:name, :description, :location_id, :created_by)
       end
 
+      def query_params
+        params.permit(:user_id, :location_id)
+      end
     end
   end
 end

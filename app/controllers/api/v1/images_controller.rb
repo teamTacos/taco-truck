@@ -4,7 +4,7 @@ module Api
       before_filter :find_image, only: [:show, :update, :destroy]
 
       def index
-        render json: Image.all
+        render json: Image.where(query_params)
       end
 
       def show
@@ -104,6 +104,9 @@ module Api
         Image.where(review_id: params[:review_id]).where.not(id: @image.id).update_all(review_banner: nil) if params[:review_banner] == "1"
       end
 
+      def query_params
+        params.permit(:location_id, :user_id, :item_id, :review_id)
+      end
     end
   end
 end

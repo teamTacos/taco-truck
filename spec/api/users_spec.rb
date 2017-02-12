@@ -19,6 +19,47 @@ describe 'Users API' do
       expect(response.code).to eql "200"
       expect(response.body).to eql user.to_json
     end
+
+    it "returns all locations by user id" do
+      FactoryGirl.create_list(:location, 4, user_id: user.id)
+
+      get "/api/v1/users/#{user.id}/locations"
+
+      expect(response.code).to eql "200"
+      expect(JSON.parse(response.body).count).to eql 4
+    end
+
+    it "returns all items by user id" do
+      location = FactoryGirl.create(:location)
+      FactoryGirl.create_list(:item, 4, location_id: location.id, user_id: user.id)
+
+      get "/api/v1/users/#{user.id}/items"
+
+      expect(response.code).to eql "200"
+      expect(JSON.parse(response.body).count).to eql 4
+    end
+
+    it "returns all reviews by user id" do
+      location = FactoryGirl.create(:location)
+      item = FactoryGirl.create(:item, location_id: location.id)
+      item2 = FactoryGirl.create(:item, location_id: location.id)
+      FactoryGirl.create_list(:review, 3, item_id: item.id, user_id: user.id)
+      FactoryGirl.create_list(:review, 2, item_id: item2.id, user_id: user.id)
+
+      get "/api/v1/users/#{user.id}/reviews"
+
+      expect(response.code).to eql "200"
+      expect(JSON.parse(response.body).count).to eql 5
+    end
+
+    it "returns all images by user id" do
+      FactoryGirl.create_list(:image, 6, user_id: user.id)
+
+      get "/api/v1/users/#{user.id}/images"
+
+      expect(response.code).to eql "200"
+      expect(JSON.parse(response.body).count).to eql 6
+    end
   end
 
   context "POST" do

@@ -4,7 +4,7 @@ module Api
       before_filter :find_review, only: [:show, :update, :destroy]
 
       def index
-        render json: Review.where(item_id: params[:item_id])
+        render json: Review.where(query_params)
       end
 
       def show
@@ -61,6 +61,9 @@ module Api
         params.permit(:description, :rating, :item_id)
       end
 
+      def query_params
+        params.permit(:item_id, :user_id)
+      end
     end
   end
 end

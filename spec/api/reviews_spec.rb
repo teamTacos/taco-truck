@@ -5,6 +5,7 @@ describe 'Reviews API' do
   let(:user) { FactoryGirl.create(:user, email: "fake@fakeremail.com", fb_user_id: "10208475170966410") }
   let(:location) { FactoryGirl.create(:location, user_id: user.id) }
   let(:item) { FactoryGirl.create(:item, location_id: location.id, user_id: user.id) }
+  let(:image) { FactoryGirl.create(:image, user_id: user.id) }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_return({"email" => "fake@fakeremail.com",
@@ -16,6 +17,8 @@ describe 'Reviews API' do
 
   context "GET" do
     it "sends a list of reviews for an item" do
+      item2 = FactoryGirl.create(:item, location_id: location.id)
+      FactoryGirl.create_list(:review, 4, item_id: item2.id, user_id: user.id)
       FactoryGirl.create_list(:review, 3, item_id: item.id, user_id: user.id)
 
       get "/api/v1/locations/#{location.id}/items/#{item.id}/reviews"

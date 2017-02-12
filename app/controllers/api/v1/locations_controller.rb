@@ -4,7 +4,7 @@ module Api
       before_filter :find_location, only: [:show, :update, :destroy]
 
       def index
-        render json: Location.all
+        render json: Location.where(query_params)
       end
 
       def show
@@ -63,6 +63,10 @@ module Api
 
       def update_params
         params.permit(:name, :city, :state, :country, :description, :created_by, :banner_image)
+      end
+
+      def query_params
+        params.permit(:user_id)
       end
     end
   end
