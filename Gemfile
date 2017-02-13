@@ -6,6 +6,7 @@ gem 'pg'
 gem 'rack-cors'
 gem 'cloudinary'
 gem 'pundit'
+gem 'uglifier', '>= 1.3.0'
 
 
 group :development, :test do
