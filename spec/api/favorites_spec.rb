@@ -53,7 +53,8 @@ describe 'Favorites API' do
           location_id: favorite.location_id
       }
 
-      post "/api/v1/users/#{user.id}/favorites", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      post "/api/v1/users/#{user.id}/favorites", params: body,
+           headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "201"
       expect(Favorite.find(JSON.parse(response.body)['id'])).to be
@@ -73,7 +74,8 @@ describe 'Favorites API' do
 
     it "deletes a favorite record" do
       favorite = FactoryGirl.create(:favorite, user_id: user.id, location_id: location.id)
-      delete "/api/v1/users/#{user.id}/favorites/#{favorite.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/users/#{user.id}/favorites/#{favorite.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Favorite.exists?(favorite.id)).to be false
@@ -83,7 +85,8 @@ describe 'Favorites API' do
       user2 = FactoryGirl.create(:user)
       favorite2 = FactoryGirl.create(:favorite, item_id: item.id, user_id: user2.id)
 
-      expect{ delete "/api/v1/users/#{user.id}/favorites/#{favorite2.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(Pundit::NotAuthorizedError)
+      expect { delete "/api/v1/users/#{user.id}/favorites/#{favorite2.id}",
+                      headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

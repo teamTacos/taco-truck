@@ -3,7 +3,7 @@ require 'cgi'
 
 class ApplicationController < ActionController::Base
   include Pundit
-  before_filter :verify_token, only: [:destroy, :update, :create]
+  before_action :verify_token, only: [:destroy, :update, :create]
 
   def verify_token
     fb_user = verify_facebook_signon_status

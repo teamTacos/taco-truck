@@ -1,7 +1,7 @@
 module Api
   module V1
     class FavoritesController < ApplicationController
-      before_filter :find_favorite, only: [:show, :update, :destroy]
+      before_action :find_favorite, only: [:show, :update, :destroy]
 
       def index
         favs = Favorite.where(query_params)
@@ -15,14 +15,14 @@ module Api
 
       def create
         if @favorite.present?
-          render nothing: true, status: :conflict
+          head :no_content, status: :conflict
         else
           @favorite = Favorite.new
           @favorite.assign_attributes(create_params)
           if @favorite.save
             render json: @favorite, status: :created
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -30,7 +30,7 @@ module Api
       def destroy
         authorize @favorite
         @favorite.delete
-        render nothing: true, status: :no_content
+        head :no_content, status: :no_content
       end
 
       private

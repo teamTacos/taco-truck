@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_filter :find_user, only: [:show, :update, :destroy]
+      before_action :find_user, only: [:show, :update, :destroy]
 
       def show
         render json: @user
@@ -9,14 +9,14 @@ module Api
 
       def create
         if @user.present?
-          render nothing: true, status: :conflict
+          head :no_content, status: :conflict
         else
           @user = User.new
           @user.assign_attributes(create_params)
           if @user.save
             render json: @user, status: :created
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -26,13 +26,13 @@ module Api
         if @user.save
           render json: @user, status: :no_content
         else
-          render nothing: true, status: :bad_request
+           head :no_content, status: :bad_request
         end
       end
 
       def destroy
         @user.delete
-        render nothing: true, status: :no_content
+         head :no_content, status: :no_content
       end
 
       private

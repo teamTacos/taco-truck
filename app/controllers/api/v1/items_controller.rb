@@ -1,7 +1,7 @@
 module Api
   module V1
     class ItemsController < ApplicationController
-      before_filter :find_item, only: [:show, :update, :destroy]
+      before_action :find_item, only: [:show, :update, :destroy]
 
       def index
         render json: Item.where(query_params)
@@ -13,14 +13,14 @@ module Api
 
       def create
         if @location.present?
-          render nothing: true, status: :conflict
+          head :no_content, status: :conflict
         else
           @item = Item.new
           @item.assign_attributes(create_params)
           if @item.save
             render json: @item, status: :created
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -31,7 +31,7 @@ module Api
         if @item.save
           render json: @item, status: :no_content
         else
-          render nothing: true, status: :bad_request
+          head :no_content, status: :bad_request
         end
       end
 
@@ -42,7 +42,7 @@ module Api
         else
           @item.remove_images
           @item.delete
-          render nothing: true, status: :no_content
+          head :no_content, status: :no_content
         end
       end
 

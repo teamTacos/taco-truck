@@ -68,7 +68,7 @@ describe "Locations API" do
     it "requires a token to create" do
       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
 
-      post "/api/v1/locations", {}, { "Authorization" => '' }
+      post "/api/v1/locations", headers: {"Authorization" => ''}
 
       expect(response.code).to eql "401"
       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
@@ -84,7 +84,7 @@ describe "Locations API" do
           description: location.description
       }
 
-      post "/api/v1/locations", body, { "Authorization" => "Bearer testtokenblahfoobarf" }
+      post "/api/v1/locations", params: body, headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "201"
       expect(Location.exists?(JSON.parse(response.body)["id"])).to be
@@ -99,7 +99,8 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect { post "/api/v1/locations", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a state to create" do
@@ -111,7 +112,8 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect { post "/api/v1/locations", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a country to create" do
@@ -123,7 +125,8 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect { post "/api/v1/locations", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }  }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires a name to create" do
@@ -135,7 +138,8 @@ describe "Locations API" do
           description: location.description
       }
 
-      expect { post "/api/v1/locations", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -143,7 +147,7 @@ describe "Locations API" do
     it "requires a token to update" do
       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
 
-      put "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
+      put "/api/v1/locations/#{location.id}", headers: {"Authorization" => ''}
 
       expect(response.code).to eql "401"
       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
@@ -152,7 +156,8 @@ describe "Locations API" do
     it "updates a location name" do
       location.name = Faker::Name.name
 
-      put "/api/v1/locations/#{location.id}", JSON.parse(location.to_json), { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      put "/api/v1/locations/#{location.id}", params: JSON.parse(location.to_json),
+          headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Location.find(location.id).name).to eql location.name
@@ -163,14 +168,14 @@ describe "Locations API" do
     it "requires a token to delete" do
       allow_any_instance_of(ApplicationController).to receive(:verify_facebook_signon_status).and_call_original
 
-      delete "/api/v1/locations/#{location.id}", {}, { "Authorization" => '' }
+      delete "/api/v1/locations/#{location.id}", headers: {"Authorization" => ''}
 
       expect(response.code).to eql "401"
       expect(JSON.parse(response.body)['error']).to eql "Bad or Missing Credentials."
     end
 
     it "deletes a location" do
-      delete "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}", headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Location.exists?(location.id)).to be false
@@ -180,13 +185,15 @@ describe "Locations API" do
       user2 = FactoryGirl.create(:user)
       location2 = FactoryGirl.create(:location, user_id: user2.id)
 
-      expect { delete "/api/v1/locations/#{location2.id}", {}, {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(Pundit::NotAuthorizedError)
+      expect { delete "/api/v1/locations/#{location2.id}",
+                      headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "will not delete a location that has items" do
       FactoryGirl.create_list(:item, Random.rand(1..5), location_id: location.id)
 
-      delete "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "406"
       expect(JSON.parse(response.body)["errors"]).to eql "Cannot delete Location that has Items."
@@ -195,7 +202,8 @@ describe "Locations API" do
     it "deletes all location associated images" do
       FactoryGirl.create_list(:image, 4, location_id: location.id)
 
-      delete "/api/v1/locations/#{location.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Image.where(location_id: location.id).count).to eql 0

@@ -1,7 +1,7 @@
 module Api
   module V1
     class ImagesController < ApplicationController
-      before_filter :find_image, only: [:show, :update, :destroy]
+      before_action :find_image, only: [:show, :update, :destroy]
 
       def index
         render json: Image.where(query_params)
@@ -13,7 +13,7 @@ module Api
 
       def create
         if @image.present?
-          render nothing: true, status: :conflict
+          head :no_content, status: :conflict
         elsif !validate_ids
           render json: { error: "Invalid ID combination." }, status: :bad_request
         else
@@ -23,7 +23,7 @@ module Api
             set_banners
             render json: @image, status: :created
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -38,7 +38,7 @@ module Api
             set_banners
             render json: @image, status: :no_content
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -46,7 +46,7 @@ module Api
       def destroy
         authorize @image
         @image.delete
-        render nothing: true, status: :no_content
+        head :no_content, status: :no_content
       end
 
       private

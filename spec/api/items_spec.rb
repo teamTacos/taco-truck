@@ -73,7 +73,8 @@ describe 'Locations API' do
           description: item.description
       }
 
-      post "/api/v1/locations/#{location.id}/items", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      post "/api/v1/locations/#{location.id}/items", params: body,
+           headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "201"
       expect(Item.exists?(JSON.parse(response.body)['id'])).to be
@@ -85,7 +86,8 @@ describe 'Locations API' do
           description: item.description
       }
 
-      expect { post "/api/v1/locations/#{location.id}/items", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -102,7 +104,8 @@ describe 'Locations API' do
     it "updates an item" do
       item.name = Faker::Name.name
 
-      put "/api/v1/locations/#{location.id}/items/#{item.id}", JSON.parse(item.to_json), { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      put "/api/v1/locations/#{location.id}/items/#{item.id}", params: JSON.parse(item.to_json),
+          headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Item.find(item.id).name).to eql item.name
@@ -120,7 +123,8 @@ describe 'Locations API' do
     end
 
     it "deletes an item" do
-      delete "/api/v1/locations/#{location.id}/items/#{item.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Item.exists?(item.id)).to be false
@@ -129,7 +133,8 @@ describe 'Locations API' do
     it "will not delete and item that has reviews" do
       FactoryGirl.create(:review, item_id: item.id)
 
-      delete "/api/v1/locations/#{location.id}/items/#{item.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "406"
       expect(JSON.parse(response.body)['errors']).to eql 'Cannot delete Item that has Reviews.'
@@ -139,13 +144,15 @@ describe 'Locations API' do
       user2 = FactoryGirl.create(:user)
       item = FactoryGirl.create(:item, location_id: location.id, user_id: user2.id)
 
-      expect{ delete "/api/v1/locations/#{location.id}/items/#{item.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }}.to raise_error(Pundit::NotAuthorizedError)
+      expect { delete "/api/v1/locations/#{location.id}/items/#{item.id}",
+                      headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "deletes all item associated images" do
       FactoryGirl.create_list(:image, 4, item_id: item.id)
 
-      delete "/api/v1/locations/#{location.id}/items/#{item.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Image.where(item_id: item.id).count).to eql 0

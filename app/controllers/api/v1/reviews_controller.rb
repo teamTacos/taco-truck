@@ -1,7 +1,7 @@
 module Api
   module V1
     class ReviewsController < ApplicationController
-      before_filter :find_review, only: [:show, :update, :destroy]
+      before_action :find_review, only: [:show, :update, :destroy]
 
       def index
         render json: Review.where(query_params)
@@ -13,14 +13,14 @@ module Api
 
       def create
         if @review.present?
-          render nothing: true, status: :conflict
+          head :no_content, status: :conflict
         else
           @review = Review.new
           @review.assign_attributes(create_params)
           if @review.save
             render json: @review, status: :created
           else
-            render nothing: true, status: :bad_request
+            head :no_content, status: :bad_request
           end
         end
       end
@@ -31,7 +31,7 @@ module Api
         if @review.save
           render json: @review, status: :no_content
         else
-          render nothing: true, status: :bad_request
+          head :no_content, status: :bad_request
         end
       end
 
@@ -39,7 +39,7 @@ module Api
         authorize @review
         @review.remove_images
         @review.delete
-        render nothing: true, status: :no_content
+        head :no_content, status: :no_content
       end
 
       private

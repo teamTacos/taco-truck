@@ -65,7 +65,8 @@ describe 'Reviews API' do
           rating: review.rating
       }
 
-      post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", params: body,
+           headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "201"
       expect(Review.exists?(JSON.parse(response.body)['id'])).to be
@@ -78,7 +79,8 @@ describe 'Reviews API' do
           rating: review.rating
       }
 
-      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body , { "Authorization" =>  "Bearer testtokenblahfoobarf" }}.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
 
     it "requires rating" do
@@ -88,7 +90,8 @@ describe 'Reviews API' do
           description: review.description,
       }
 
-      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", body, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(ActionController::ParameterMissing)
+      expect { post "/api/v1/locations/#{location.id}/items/#{item.id}/reviews", params: body,
+                    headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(ActionController::ParameterMissing)
     end
   end
 
@@ -107,7 +110,9 @@ describe 'Reviews API' do
       review = FactoryGirl.create(:review, item_id: item.id, user_id: user.id)
       review.description = Faker::Lorem.sentence
 
-      put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", JSON.parse(review.to_json), { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      put "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", params: JSON.parse(review.to_json),
+          headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
+
 
       expect(response.code).to eql "204"
       expect(Review.find(review.id).description).to eql review.description
@@ -128,7 +133,8 @@ describe 'Reviews API' do
     it "deletes an review" do
       review = FactoryGirl.create(:review, item_id: item.id, user_id: user.id)
 
-      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Review.exists?(review.id)).to be false
@@ -138,14 +144,16 @@ describe 'Reviews API' do
       user2 = FactoryGirl.create(:user)
       review = FactoryGirl.create(:review, item_id: item.id, user_id: user2.id)
 
-      expect{ delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" } }.to raise_error(Pundit::NotAuthorizedError)
+      expect { delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}",
+                      headers: {"Authorization" => "Bearer testtokenblahfoobarf"} }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "deletes all review associated images" do
       review = FactoryGirl.create(:review, item_id: item.id, user_id: user.id)
       FactoryGirl.create_list(:image, 4, review_id: review.id, user_id: user.id)
 
-      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}", {}, { "Authorization" =>  "Bearer testtokenblahfoobarf" }
+      delete "/api/v1/locations/#{location.id}/items/#{item.id}/reviews/#{review.id}",
+             headers: {"Authorization" => "Bearer testtokenblahfoobarf"}
 
       expect(response.code).to eql "204"
       expect(Image.where(review_id: review.id).count).to eql 0
