@@ -58,11 +58,11 @@ module Api
         params.require(:city)
         params.require(:state)
         params.require(:country)
-        params.permit(:name, :city, :state, :country, :description, :created_by, :banner_image)
+        params.permit(:name, :city, :state, :country, :description, :created_by)
       end
 
       def update_params
-        params.permit(:name, :city, :state, :country, :description, :created_by, :banner_image)
+        params.permit(:name, :city, :state, :country, :description, :created_by)
       end
 
       def query_params
