@@ -6,7 +6,6 @@ class CreateLocations < ActiveRecord::Migration
       t.string :state
       t.string :country
       t.text :description
-      t.integer :banner_image
       t.timestamps null: false
     end
   end
