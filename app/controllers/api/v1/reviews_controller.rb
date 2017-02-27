@@ -58,7 +58,7 @@ module Api
         params.require(:item_id)
         params.require(:rating)
         params.require(:description)
-        params.permit(:description, :rating, :item_id)
+        params.permit(:description, :rating, :item_id, :user_id)
       end
 
       def query_params

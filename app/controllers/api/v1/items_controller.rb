@@ -56,7 +56,7 @@ module Api
         params[:user_id] = session[:current_user][:id]
         params.require(:location_id)
         params.require(:name)
-        params.permit(:name, :description, :location_id, :created_by)
+        params.permit(:name, :description, :location_id, :created_by, :user_id)
       end
 
       def update_params
