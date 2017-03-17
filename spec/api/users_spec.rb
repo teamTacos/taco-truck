@@ -52,6 +52,13 @@ describe 'Users API' do
       expect(JSON.parse(response.body).count).to eql 5
     end
 
+    it "returns a user by facebook user id" do
+      user
+      get "/api/v1/users"
+      
+      expect(response.body).to eql "[#{User.find(user.id).to_json}]"
+    end
+
     it "returns all images by user id" do
       FactoryGirl.create_list(:image, 6, user_id: user.id)
 

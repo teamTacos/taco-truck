@@ -7,6 +7,10 @@ module Api
         render json: @user
       end
 
+      def index
+        render json: User.where(query_params)
+      end
+
       def create
         if @user.present?
           head :no_content, status: :conflict
@@ -52,6 +56,10 @@ module Api
       def update_params
         params.require(:email)
         params.require(:fb_user_id)
+        params.permit(:fb_user_id, :access_token, :email, :first_name, :last_name)
+      end
+
+      def query_params
         params.permit(:fb_user_id, :access_token, :email, :first_name, :last_name)
       end
     end
