@@ -38,14 +38,7 @@ module Api
       def sort_and_clean_results(favs)
         favs = JSON.parse(favs.to_json)
         favs = favs.map(&:compact)
-        results = {locations: [], images: [], items: [], reviews: []}
-        favs.each do |fav|
-          results[:locations] << fav["location_id"] if fav.has_key? "location_id"
-          results[:reviews] << fav["review_id"] if fav.has_key? "review_id"
-          results[:items] << fav["item_id"] if fav.has_key? "item_id"
-          results[:images] << fav["image_id"] if fav.has_key? "image_id"
-        end
-        results
+        favs
       end
       
       def find_favorite

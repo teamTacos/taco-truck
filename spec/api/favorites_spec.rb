@@ -29,10 +29,10 @@ describe 'Favorites API' do
 
       expect(response.code).to eql "200"
       resp = JSON.parse(response.body)
-      expect(resp["locations"].count).to eql 1
-      expect(resp["items"].count).to eql 1
-      expect(resp["reviews"].count).to eql 2
-      expect(resp["images"].count).to eql 1
+      expect((resp.map { |h| h.slice("location_id").count }).inject(:+)).to eql 1
+      expect((resp.map { |h| h.slice("image_id").count }).inject(:+)).to eql 1
+      expect((resp.map { |h| h.slice("review_id").count }).inject(:+)).to eql 2
+      expect((resp.map { |h| h.slice("item_id").count }).inject(:+)).to eql 1
     end
   end
 
